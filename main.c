@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <leds.h>
 
 #include "ch.h"
 #include "hal.h"
 #include "memory_protection.h"
+#include "leds.h"
 #include <main.h>
 
 
@@ -18,12 +18,10 @@ int main(void)
     mpu_init();
 
     set_led(LED7, 8);
-    set_led(LED3, 8);
-
     /* Infinite loop. */
     while (1) {
     	//waits 1 second
-
+        //chThdSleepMilliseconds(1000);
     }
 }
 
