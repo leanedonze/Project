@@ -18,6 +18,7 @@ int main(void)
     mpu_init();
 
     set_led(LED7, 8);
+    set_led(LED1, 8);
     /* Infinite loop. */
     while (1) {
     	//waits 1 second
