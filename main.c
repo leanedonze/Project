@@ -7,22 +7,44 @@
 #include "hal.h"
 #include "memory_protection.h"
 #include "leds.h"
+#include <sensors/proximity.h>
 #include <main.h>
+
+messagebus_t bus;
+MUTEX_DECL(bus_lock);
+CONDVAR_DECL(bus_condvar);
+
+#define THRESHOLD 	70
 
 
 int main(void)
 {
 
+
     halInit();
     chSysInit();
     mpu_init();
+    messagebus_init(&bus, &bus_lock, &bus_condvar);
+    proximity_start();
 
-    set_led(LED7, 8);
-    set_led(LED1, 8);
+
     /* Infinite loop. */
     while (1) {
+    	if (get_prox(6) > THRESHOLD){
+    		set_led(LED7, 2);
+    	}
+    	else{
+    		set_led(LED7, 0);
+    	}
+    	if (get_prox(3) > THRESHOLD){
+    		set_led(LED3, 2);
+
+    	}
+    	else{
+    		set_led(LED3, 0);
+    	}
     	//waits 1 second
-        //chThdSleepMilliseconds(1000);
+    	//chThdSleepMilliseconds(1000);
     }
 }
 
