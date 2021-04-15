@@ -8,7 +8,8 @@
 #ifndef PROCESS_PROXIMITY_H_
 #define PROCESS_PROXIMITY_H_
 
-
+//starts proximity sensor thread
+void measure_proximity_start(void);
 
 
 
