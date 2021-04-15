@@ -14,7 +14,7 @@ messagebus_t bus;
 MUTEX_DECL(bus_lock);
 CONDVAR_DECL(bus_condvar);
 
-#define THRESHOLD 	70
+#define THRESHOLD 	5
 
 
 int main(void)
@@ -26,17 +26,19 @@ int main(void)
     mpu_init();
     messagebus_init(&bus, &bus_lock, &bus_condvar);
     proximity_start();
+    calibrate_ir();
 
 
     /* Infinite loop. */
     while (1) {
-    	if (get_prox(6) > THRESHOLD){
+
+    	if (get_calibrated_prox(6) > THRESHOLD){
     		set_led(LED7, 2);
     	}
     	else{
     		set_led(LED7, 0);
     	}
-    	if (get_prox(3) > THRESHOLD){
+    	if (get_calibrated_prox(3) > THRESHOLD){
     		set_led(LED3, 2);
 
     	}
