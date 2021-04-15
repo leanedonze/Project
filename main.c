@@ -8,6 +8,12 @@
 #include "memory_protection.h"
 #include "leds.h"
 #include <main.h>
+#include "sensors/proximity.h"
+#include "process_proximity.h"
+
+messagebus_t bus;
+MUTEX_DECL(bus_lock);
+CONDVAR_DECL(bus_condvar);
 
 
 int main(void)
@@ -16,8 +22,19 @@ int main(void)
     halInit();
     chSysInit();
     mpu_init();
+    messagebus_init(&bus, &bus_lock, &bus_condvar);
 
-    set_led(LED7, 8);
+
+    //starting proximity sensors
+    proximity_start();
+
+    //calibrate proximity sensors						HERE?
+    calibrate_ir();
+
+    //start threads for processing direction and proximity
+    measure_proximity_start();
+
+
     /* Infinite loop. */
     while (1) {
     	//waits 1 second
