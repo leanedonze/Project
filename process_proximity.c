@@ -42,13 +42,13 @@ static THD_FUNCTION(Proximity, arg) {
     while(1){
 
     	ir_state(IR_FRONT_RIGHT,LED1);
-    	ir_state(IR_FRONT_RIGHT45,LED2);
+    	//ir_state(IR_FRONT_RIGHT45,LED3);
     	ir_state(IR_RIGHT,LED3);
-    	ir_state(IR_BACK_RIGHT,LED5);
-    	ir_state(IR_BACK_LEFT,LED6);
+    	//ir_state(IR_BACK_RIGHT,LED5);
+    	ir_state(IR_BACK_LEFT,LED5);
     	ir_state(IR_LEFT,LED7);
-    	ir_state(IR_FRONT_LEFT45,LED8);
-    	ir_state(IR_FRONT_LEFT,LED1);
+    	//ir_state(IR_FRONT_LEFT45,LED7);
+    	//ir_state(IR_FRONT_LEFT,LED1);
 
     	/*if (get_calibrated_prox(IR_FRONT_RIGHT)>IR_THRESHOLD){
     		ir_states[IR_FRONT_RIGHT] = true;
