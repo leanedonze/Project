@@ -7,8 +7,13 @@
 #include "audio/microphone.h"
 #include "process_audio.h"
 #include "arm_const_structs.h"
+#include "leds.h"
+//#include "math.h"
 
-#define FFT_SIZE 	1024
+#define FFT_SIZE 				1024
+#define MIN_VALUE_THRESHOLD		10000
+#define MIN_FREQ				10	//we don't analyze before this index to not use resources for nothing (156.25Hz)
+#define MAX_FREQ				30	//we don't analyze after this index to not use resources for nothing (468.75Hz)
 
 
 //2 times FFT_SIZE because these arrays contain complex numbers (real + imaginary)
@@ -28,6 +33,20 @@ void doFFT_optimized(uint16_t size, float* complex_buffer){
 	if(size == 1024)
 		arm_cfft_f32(&arm_cfft_sR_f32_len1024, complex_buffer, 0, 1);
 
+}
+
+int16_t detect_frequency(float* data){
+	float max_norm = MIN_VALUE_THRESHOLD;
+	int16_t max_norm_index = -1;
+
+	//search for the highest peak
+	for(uint16_t i = MIN_FREQ ; i <= MAX_FREQ ; i++){
+		if(data[i] > max_norm){
+			max_norm = data[i];
+			max_norm_index = i;
+		}
+	}
+	return max_norm_index;
 }
 
 
@@ -90,7 +109,17 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		arm_cmplx_mag_f32(micFront_cmplx_input, micFront_output, FFT_SIZE);
 		arm_cmplx_mag_f32(micBack_cmplx_input, micBack_output, FFT_SIZE);
 
-		//TODO send data to motor control
+		//find index where max frequency is
+
+		int16_t indexRight = detect_frequency(micRight_output);
+		int16_t indexLeft = detect_frequency(micLeft_output);
+		//float phaseRight = atan2(micLeft_cmplx_input[indexLeft][0]/micLeft_cmplx_input[indexLeft][1]);
+		if ((indexLeft>indexRight-5) & (indexLeft<indexRight+5)){			//MAGIC NUMBER
+			set_led(LED5,2);
+		} else {
+			set_led(LED5,0);
+		}
+
 
 		nb_samples = 0;
 

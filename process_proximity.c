@@ -23,11 +23,11 @@ static bool ir_states[NUMBER_SENSORS];
 void ir_state(int sensor, int led ){
 	if (get_calibrated_prox(sensor)>IR_THRESHOLD){
 		ir_states[sensor] = true;
-		set_led(led,2);									//Temporary (for test)
+		//set_led(led,2);									//Temporary (for test)
 	}
 	else{
 		ir_states[sensor] = false;
-		set_led(led,0);
+		//set_led(led,0);
 	}
 }
 
