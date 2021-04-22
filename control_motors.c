@@ -63,6 +63,13 @@ static THD_FUNCTION(Motors, arg) {
     	//Get IR_sensors
     	get_ir_states(ir_states);
 
+    	if(ir_states[2] == 1){
+    		set_led(LED3, 2);
+    	}
+    	else{
+    		set_led(LED3, 0);
+    	}
+
     	/*If no obstacle, follow the sound
     	if (compare_tab(no_obstacle,ir_states) == 1){
     		audio_control();
