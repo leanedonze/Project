@@ -17,6 +17,7 @@
 #define MAX_FREQ				30	//we don't analyze after this index to not use resources for nothing (468.75Hz)
 
 
+
 //2 times FFT_SIZE because these arrays contain complex numbers (real + imaginary)
 static float micLeft_cmplx_input[2 * FFT_SIZE];
 static float micRight_cmplx_input[2 * FFT_SIZE];
@@ -28,7 +29,9 @@ static float micRight_output[FFT_SIZE];
 static float micFront_output[FFT_SIZE];
 static float micBack_output[FFT_SIZE];
 
-static float direction;
+static float angle;
+static float deltaPhaseRL = 0;
+static float deltaPhaseFB = 0; //RLBF
 
 
 //Fast Fourier Transform
@@ -121,46 +124,65 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		int16_t indexFront = detect_frequency(micFront_output);
 		int16_t indexBack = detect_frequency(micBack_output);
 
-
 		//find phase differences
 
-		float phaseRight = 0;
-		float phaseLeft = 0;
-		float phaseFront = 0;
-		float phaseBack = 0;
+		float phaseRight = atan2(micRight_cmplx_input[indexRight + 1],micRight_cmplx_input[indexRight]);
+		float phaseLeft = atan2(micLeft_cmplx_input[indexLeft + 1],micLeft_cmplx_input[indexLeft]);
+		float phaseFront = atan2(micFront_cmplx_input[indexFront + 1],micFront_cmplx_input[indexFront]);
+		float phaseBack = atan2(micBack_cmplx_input[indexBack + 1],micBack_cmplx_input[indexBack]);
 
-		/*for (uint16_t i = 0 ; i < 2*FFT_SIZE ; i+=2 ){
-			phaseRight += atan2(micRight_cmplx_input[i + 1],micRight_cmplx_input[i]);		//MAGIC NUMBERS
-			phaseLeft += atan2(micLeft_cmplx_input[i + 1],micLeft_cmplx_input[i]);
-			phaseFront += atan2(micFront_cmplx_input[i + 1],micFront_cmplx_input[i]);
-			phaseBack += atan2(micBack_cmplx_input[i + 1],micBack_cmplx_input[i]);
-		}*/
-		phaseRight = atan2(micRight_cmplx_input[indexRight + 1],micRight_cmplx_input[indexRight]);		//MAGIC NUMBERS
-		phaseLeft = atan2(micLeft_cmplx_input[indexLeft + 1],micLeft_cmplx_input[indexLeft]);
-		phaseFront = atan2(micFront_cmplx_input[indexFront + 1],micFront_cmplx_input[indexFront]);
-		phaseBack = atan2(micBack_cmplx_input[indexBack + 1],micBack_cmplx_input[indexBack]);
+		//attempt direction with atan, works
 
+		angle = atan2((phaseRight-phaseLeft),(phaseFront-phaseBack));
 
-
-		direction = atan2((phaseRight-phaseLeft),(phaseFront-phaseBack));
-
-    	if (direction>0){
+    	if (angle>0){
     		set_led(LED7,2);
     		set_led(LED3,0);
-    	} else if (direction<=0){
+    	} else if (angle<=0){
     		set_led(LED7,0);
     		set_led(LED3,2);
     	} else {
     		set_led(LED1,2);
     	}
 
+    	//attempt direction with bool table / state machine //RLBF
+
+    	deltaPhaseRL = phaseRight - phaseLeft;
+    	deltaPhaseFB = phaseFront - phaseBack;
+
+
 		nb_samples = 0;
 
 	}
 }
 
-float get_direction(void){
-	return direction;
+float get_direction_angle(void){
+	return angle;
+}
+
+void get_direction(bool* direction){		//RLBF
+											// TODO find out whether the correct directions are set
+	if (deltaPhaseRL>0.2){
+		direction[MIC_RIGHT] = 1;
+		direction[MIC_LEFT] = 0;
+	} else if (deltaPhaseRL<0.2){
+		direction[MIC_RIGHT] = 0;
+		direction[MIC_LEFT] = 1;
+	} else {
+		direction[MIC_RIGHT] = 0;
+		direction[MIC_LEFT] = 0;
+	}
+
+	if (deltaPhaseFB>0.2){
+		direction[MIC_FRONT] = 1;
+		direction[MIC_BACK] = 0;
+	} else if (deltaPhaseRL<0.2){
+		direction[MIC_FRONT] = 0;
+		direction[MIC_BACK] = 1;
+	} else {
+		direction[MIC_FRONT] = 0;
+		direction[MIC_BACK] = 0;
+	}
 }
 
 float* get_audio_buffer_ptr(BUFFER_NAME_t name){
