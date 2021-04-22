@@ -28,6 +28,8 @@ static float micRight_output[FFT_SIZE];
 static float micFront_output[FFT_SIZE];
 static float micBack_output[FFT_SIZE];
 
+static float direction;
+
 
 //Fast Fourier Transform
 void doFFT_optimized(uint16_t size, float* complex_buffer){
@@ -116,12 +118,9 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 
 		int16_t indexRight = detect_frequency(micRight_output);
 		int16_t indexLeft = detect_frequency(micLeft_output);
+		int16_t indexFront = detect_frequency(micFront_output);
+		int16_t indexBack = detect_frequency(micBack_output);
 
-		if ((indexLeft>indexRight-5) & (indexLeft<indexRight+5)){			//MAGIC NUMBER
-			set_led(LED5,2);
-		} else {
-			set_led(LED5,0);
-		}
 
 		//find phase differences
 
@@ -130,18 +129,38 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		float phaseFront = 0;
 		float phaseBack = 0;
 
-		for (uint16_t i = 0 ; i < 2*FFT_SIZE ; i+=2 ){
+		/*for (uint16_t i = 0 ; i < 2*FFT_SIZE ; i+=2 ){
 			phaseRight += atan2(micRight_cmplx_input[i + 1],micRight_cmplx_input[i]);		//MAGIC NUMBERS
 			phaseLeft += atan2(micLeft_cmplx_input[i + 1],micLeft_cmplx_input[i]);
 			phaseFront += atan2(micFront_cmplx_input[i + 1],micFront_cmplx_input[i]);
 			phaseBack += atan2(micBack_cmplx_input[i + 1],micBack_cmplx_input[i]);
-		}
+		}*/
+		phaseRight = atan2(micRight_cmplx_input[indexRight + 1],micRight_cmplx_input[indexRight]);		//MAGIC NUMBERS
+		phaseLeft = atan2(micLeft_cmplx_input[indexLeft + 1],micLeft_cmplx_input[indexLeft]);
+		phaseFront = atan2(micFront_cmplx_input[indexFront + 1],micFront_cmplx_input[indexFront]);
+		phaseBack = atan2(micBack_cmplx_input[indexBack + 1],micBack_cmplx_input[indexBack]);
 
-		float direction = atan2((phaseRight)-(phaseLeft),(phaseFront)-(phaseBack));
+
+
+		direction = atan2((phaseRight-phaseLeft),(phaseFront-phaseBack));
+
+    	if (direction>0){
+    		set_led(LED7,2);
+    		set_led(LED3,0);
+    	} else if (direction<=0){
+    		set_led(LED7,0);
+    		set_led(LED3,2);
+    	} else {
+    		set_led(LED1,2);
+    	}
 
 		nb_samples = 0;
 
 	}
+}
+
+float get_direction(void){
+	return direction;
 }
 
 float* get_audio_buffer_ptr(BUFFER_NAME_t name){
