@@ -8,7 +8,8 @@
 #include "process_audio.h"
 #include "arm_const_structs.h"
 #include "leds.h"
-//#include "math.h"
+#include <arm_math.h>
+//#include <math.h>
 
 #define FFT_SIZE 				1024
 #define MIN_VALUE_THRESHOLD		10000
@@ -70,6 +71,7 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		micBack_cmplx_input[nb_samples] = (float)data[i + MIC_BACK];
 		micFront_cmplx_input[nb_samples] = (float)data[i + MIC_FRONT];
 
+
 		nb_samples++;
 
 		micRight_cmplx_input[nb_samples] = 0;
@@ -84,6 +86,7 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 			break;
 		}
 	}
+
 
 	if(nb_samples >= (2 * FFT_SIZE)){
 		/*	FFT processing
@@ -113,13 +116,28 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 
 		int16_t indexRight = detect_frequency(micRight_output);
 		int16_t indexLeft = detect_frequency(micLeft_output);
-		//float phaseRight = atan2(micLeft_cmplx_input[indexLeft][0]/micLeft_cmplx_input[indexLeft][1]);
+
 		if ((indexLeft>indexRight-5) & (indexLeft<indexRight+5)){			//MAGIC NUMBER
 			set_led(LED5,2);
 		} else {
 			set_led(LED5,0);
 		}
 
+		//find phase differences
+
+		float phaseRight = 0;
+		float phaseLeft = 0;
+		float phaseFront = 0;
+		float phaseBack = 0;
+
+		for (uint16_t i = 0 ; i < 2*FFT_SIZE ; i+=2 ){
+			phaseRight += atan2(micRight_cmplx_input[i + 1],micRight_cmplx_input[i]);		//MAGIC NUMBERS
+			phaseLeft += atan2(micLeft_cmplx_input[i + 1],micLeft_cmplx_input[i]);
+			phaseFront += atan2(micFront_cmplx_input[i + 1],micFront_cmplx_input[i]);
+			phaseBack += atan2(micBack_cmplx_input[i + 1],micBack_cmplx_input[i]);
+		}
+
+		float direction = atan2((phaseRight)-(phaseLeft),(phaseFront)-(phaseBack));
 
 		nb_samples = 0;
 
