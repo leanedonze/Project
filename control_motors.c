@@ -16,8 +16,27 @@ static bool ir_states[NUMBER_SENSORS];
 
 static const bool no_obstacle[NUMBER_SENSORS] = {0, 0, 0, 0, 0, 0, 0, 0};
 
+
 void audio_control(){
 	//
+}
+/*
+void proximity_control(){
+	if ((ir_state[IR_FRONT_RIGHT] == 1) or (ir_state[IR_FRONT_LEFT] == 1){
+		if(ir_state[IR_LEFT] == 0){
+			//turn left
+		}
+		else if(ir_state[IR_RIGHT == 0){
+	}
+}
+*/
+bool compare_tab(bool* tab1, bool* tab2){
+	for (int i=0; i < NUMBER_SENSORS; ++i){
+		if((tab1[i]) != (tab2[i])){
+			return false;
+		}
+	}
+	return true;
 }
 
 static THD_WORKING_AREA(waMotors, 256);	//Checker taille à réserver sur la stack
@@ -42,18 +61,21 @@ static THD_FUNCTION(Motors, arg) {
     	 */
 
     	//Get IR_sensors
-    	//ChSysLock();		Chercher comment l'utiliser
     	get_ir_states(ir_states);
 
-    	//If no obstacle, follow the sound
-    	audio_control();
-
-    	//If
+    	/*If no obstacle, follow the sound
+    	if (compare_tab(no_obstacle,ir_states) == 1){
+    		audio_control();
+    	}
+    	else{
+    		proximity_control();
+    	}
+		*/
         chThdSleepMilliseconds(20); // To be determined
     }
 }
 
 void control_motors_start(void){
-	chThdCreateStatic(waMotors, sizeof(Motors), NORMALPRIO, Motors, NULL);
+	chThdCreateStatic(waMotors, sizeof(waMotors), NORMALPRIO, Motors, NULL);
 }
 

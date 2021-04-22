@@ -25,6 +25,8 @@ int main(void)
     mpu_init();
     messagebus_init(&bus, &bus_lock, &bus_condvar);
 
+    //start the control of the motors
+    control_motors_start();
 
     //starting proximity sensors
     proximity_start();
@@ -35,10 +37,9 @@ int main(void)
     //start threads for processing direction and proximity
     //measure_proximity_start();
 
-    //start the control of the motors
-    control_motors_start();
 
-    set_led(LED5, 2);
+
+
     /* Infinite loop. */
     while (1) {
     	//waits 1 second
