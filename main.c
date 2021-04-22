@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 #include "ch.h"
 #include "hal.h"
@@ -10,6 +10,7 @@
 #include <main.h>
 #include "sensors/proximity.h"
 #include "process_proximity.h"
+#include "control_motors.h"
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
@@ -32,9 +33,12 @@ int main(void)
     calibrate_ir();
 
     //start threads for processing direction and proximity
-    measure_proximity_start();
+    //measure_proximity_start();
 
+    //start the control of the motors
+    control_motors_start();
 
+    set_led(LED5, 2);
     /* Infinite loop. */
     while (1) {
     	//waits 1 second

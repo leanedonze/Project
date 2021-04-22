@@ -8,8 +8,15 @@
 #ifndef PROCESS_PROXIMITY_H_
 #define PROCESS_PROXIMITY_H_
 
+#include <stdbool.h>
+
+#define NUMBER_SENSORS		8
+
 //starts proximity sensor thread
-void measure_proximity_start(void);
+//void measure_proximity_start(void);
+
+//get states of IR_sensors
+void get_ir_states(bool* tab);
 
 
 
