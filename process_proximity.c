@@ -8,16 +8,6 @@
 #define SLEEP50HZ			20
 #define IR_THRESHOLD		50		//tells the distance limit to an object before turning
 
-#define IR_FRONT_RIGHT		0
-#define IR_FRONT_RIGHT45	1
-#define IR_RIGHT			2
-#define IR_BACK_RIGHT		3
-#define IR_BACK_LEFT		4
-#define IR_LEFT				5
-#define IR_FRONT_LEFT45		6
-#define IR_FRONT_LEFT		7
-
-
 void ir_state(bool* tab, int sensor){
 	if (get_calibrated_prox(sensor)>IR_THRESHOLD){
 		tab[sensor] = true;

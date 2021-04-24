@@ -8,28 +8,34 @@
 #include <stdbool.h>
 #include "process_proximity.h"
 #include "leds.h"
+#include "motors.h"
 #include "control_motors.h"
 
 #define	FREQU_MOTORS	1	//D'après le cours, fréquence thread motor 1kHz -> à checker
 
 static bool ir_states[NUMBER_SENSORS];
 
-static const bool no_obstacle[NUMBER_SENSORS] = {0, 0, 0, 0, 0, 0, 0, 0};
+static bool no_obstacle[NUMBER_SENSORS] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 
 void audio_control(){
-	//
+	left_motor_set_speed(400);
+	right_motor_set_speed(400);
 }
-/*
+
 void proximity_control(){
-	if ((ir_state[IR_FRONT_RIGHT] == 1) or (ir_state[IR_FRONT_LEFT] == 1){
-		if(ir_state[IR_LEFT] == 0){
-			//turn left
+	if ((ir_states[IR_FRONT_RIGHT] == 1) || (ir_states[IR_FRONT_LEFT] == 1)){
+		if(ir_states[IR_LEFT] == 0){
+			left_motor_set_speed(400);
+			right_motor_set_speed(-400);
 		}
-		else if(ir_state[IR_RIGHT == 0){
+		else if(ir_states[IR_RIGHT] == 0){
+			left_motor_set_speed(-400);
+			right_motor_set_speed(400);
+		}
 	}
 }
-*/
+
 bool compare_tab(bool* tab1, bool* tab2){
 	for (int i=0; i < NUMBER_SENSORS; ++i){
 		if((tab1[i]) != (tab2[i])){
@@ -70,14 +76,14 @@ static THD_FUNCTION(Motors, arg) {
     		set_led(LED3, 0);
     	}
 
-    	/*If no obstacle, follow the sound
+    	//If no obstacle, follow the sound
     	if (compare_tab(no_obstacle,ir_states) == 1){
     		audio_control();
     	}
     	else{
     		proximity_control();
     	}
-		*/
+
         chThdSleepMilliseconds(20); // To be determined
     }
 }

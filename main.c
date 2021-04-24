@@ -24,7 +24,7 @@ int main(void)
     chSysInit();
     mpu_init();
     messagebus_init(&bus, &bus_lock, &bus_condvar);
-
+    motors_init();
     //start the control of the motors
     control_motors_start();
 
