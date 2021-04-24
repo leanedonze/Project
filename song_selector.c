@@ -6,7 +6,7 @@
  */
 
 #include "selector.h"
-#include "play_melody.h"
+#include "audio/play_melody.h"
 
 static uint8_t currentSong = EXTERNAL_SONG;
 
@@ -21,8 +21,7 @@ void launch_song (uint8_t song){
 }
 
 
-void play_song(void){		//probably needs a thread, right ? playMelodyStart(); to be placed somewhere
-
+void choose_song(void){		//probably needs a thread, right ? playMelodyStart(); to be placed somewhere
 
 	switch (get_selector()) {
 		case IMPOSSIBLE_MISSION:
