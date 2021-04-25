@@ -135,7 +135,7 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 
 		angle = atan2((phaseRight-phaseLeft),(phaseFront-phaseBack));
 
-    	if (angle>0){
+    	/*if (angle>0){
     		set_led(LED3,2);
     		set_led(LED7,0);
     	} else if (angle<=0){
@@ -144,6 +144,7 @@ void processAudioData(int16_t *data, uint16_t num_samples){
     	} else {
     		set_led(LED1,2);
     	}
+    	*/
 
     	//attempt direction with bool table / state machine //RLBF
 

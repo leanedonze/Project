@@ -9,6 +9,7 @@
 #include "process_proximity.h"
 #include "leds.h"
 #include "motors.h"
+#include "audio/microphone.h"			// à éviter ?
 #include "control_motors.h"
 #include "process_audio.h"
 
@@ -37,13 +38,14 @@ bool compare_tab(bool* tab1, bool* tab2, int size){
 }
 
 void audio_control(){
+	/* Idée 1 : 8 directions possibles
 	if (compare_tab(go_front, mic_states, NUMBER_MIC) == 1){
 		left_motor_set_speed(600);
 		right_motor_set_speed(600);
 	}
 	else if (compare_tab(go_front_right, mic_states, NUMBER_MIC) == 1){
 		left_motor_set_speed(600);
-		right_motor_set_speed(200);
+		right_motor_set_speed(600);
 	}
 	else if (compare_tab(go_right, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(600);
@@ -51,14 +53,14 @@ void audio_control(){
 		}
 	else if (compare_tab(go_back_right, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(-600);
-			right_motor_set_speed(-200);
+			right_motor_set_speed(-600);
 		}
 	else if (compare_tab(go_back, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(-600);
 			right_motor_set_speed(-600);
 		}
 	else if (compare_tab(go_back_left, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(-200);
+			left_motor_set_speed(-600);
 			right_motor_set_speed(-600);
 		}
 	else if (compare_tab(go_left, mic_states, NUMBER_MIC) == 1){
@@ -66,9 +68,43 @@ void audio_control(){
 			right_motor_set_speed(600);
 		}
 	else if (compare_tab(go_front_left, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(200);
+			left_motor_set_speed(600);
 			right_motor_set_speed(600);
 		}
+	*/
+	//Idée 2 : soit en avant, soit en arrière, soit à gauche, soit à droite
+	if (mic_states[MIC_FRONT] == 1){
+		left_motor_set_speed(600);
+		right_motor_set_speed(600);
+		set_led(LED1,2);
+		set_led(LED3,0);
+		set_led(LED5,0);
+		set_led(LED7,0);
+	}
+	else if(mic_states[MIC_BACK] == 1){
+		left_motor_set_speed(-600);
+		right_motor_set_speed(-600);
+		set_led(LED1,0);
+		set_led(LED3,0);
+		set_led(LED5,2);
+		set_led(LED7,0);
+	}
+	else if (mic_states[MIC_LEFT] == 1){
+		left_motor_set_speed(-600);
+		right_motor_set_speed(600);
+		set_led(LED1,0);
+		set_led(LED3,0);
+		set_led(LED5,0);
+		set_led(LED7,2);
+	}
+	else if (mic_states[MIC_RIGHT] == 1){
+		left_motor_set_speed(600);
+		right_motor_set_speed(-600);
+		set_led(LED1,0);
+		set_led(LED3,2);
+		set_led(LED5,0);
+		set_led(LED7,0);
+	}
 }
 
 void proximity_control(){
