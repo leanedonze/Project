@@ -19,19 +19,19 @@ static bool no_obstacle[NUMBER_SENSORS] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 
 void audio_control(){
-	left_motor_set_speed(400);
-	right_motor_set_speed(400);
+	left_motor_set_speed(600);
+	right_motor_set_speed(600);
 }
 
 void proximity_control(){
-	if ((ir_states[IR_FRONT_RIGHT] == 1) || (ir_states[IR_FRONT_LEFT] == 1)){
-		if(ir_states[IR_LEFT] == 0){
-			left_motor_set_speed(400);
-			right_motor_set_speed(-400);
+	if ((ir_states[IR_FRONT_RIGHT] == 1) || (ir_states[IR_FRONT_LEFT] == 1)){		//Check if obstacle on front
+		if(ir_states[IR_LEFT] == 0){												//If if obstacle on the left
+			left_motor_set_speed(-200);												//If not, turn left
+			right_motor_set_speed(200);
 		}
-		else if(ir_states[IR_RIGHT] == 0){
-			left_motor_set_speed(-400);
-			right_motor_set_speed(400);
+		else if(ir_states[IR_RIGHT] == 0){											//Check if obstacle on the right
+			left_motor_set_speed(200);												//If not, turn right
+			right_motor_set_speed(-200);
 		}
 	}
 }
@@ -69,22 +69,15 @@ static THD_FUNCTION(Motors, arg) {
     	//Get IR_sensors
     	get_ir_states(ir_states);
 
-    	if(ir_states[2] == 1){
-    		set_led(LED3, 2);
-    	}
-    	else{
-    		set_led(LED3, 0);
-    	}
 
-    	//If no obstacle, follow the sound
-    	if (compare_tab(no_obstacle,ir_states) == 1){
+    	if (compare_tab(no_obstacle,ir_states) == 1){								//If no obstacle, follow the sound
     		audio_control();
     	}
-    	else{
+    	else{																		//If obstacle, direction with IR_sensors
     		proximity_control();
     	}
 
-        chThdSleepMilliseconds(20); // To be determined
+        chThdSleepMilliseconds(1); // To be determined
     }
 }
 
