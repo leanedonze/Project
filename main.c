@@ -12,6 +12,7 @@
 #include "process_proximity.h"
 #include "audio/microphone.h"
 #include "process_audio.h"
+#include "control_motors.h"
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
