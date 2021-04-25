@@ -9,6 +9,7 @@
 #include "leds.h"
 #include <sensors/proximity.h>
 #include <main.h>
+#include "motors.h"
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
@@ -27,26 +28,17 @@ int main(void)
     messagebus_init(&bus, &bus_lock, &bus_condvar);
     proximity_start();
     calibrate_ir();
+    motors_init();
+
 
 
     /* Infinite loop. */
     while (1) {
 
-    	if (get_calibrated_prox(6) > THRESHOLD){
-    		set_led(LED7, 2);
-    	}
-    	else{
-    		set_led(LED7, 0);
-    	}
-    	if (get_calibrated_prox(3) > THRESHOLD){
-    		set_led(LED3, 2);
-
-    	}
-    	else{
-    		set_led(LED3, 0);
-    	}
+    	left_motor_set_speed(200);
+    	right_motor_set_speed(600);
     	//waits 1 second
-    	//chThdSleepMilliseconds(1000);
+    	chThdSleepMilliseconds(1000);
     }
 }
 
