@@ -7,10 +7,11 @@
 #include "hal.h"
 #include "memory_protection.h"
 #include "leds.h"
-#include <main.h>
+#include "main.h"
 #include "sensors/proximity.h"
 #include "process_proximity.h"
-#include "control_motors.h"
+#include "audio/microphone.h"
+#include "process_audio.h"
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
@@ -37,7 +38,8 @@ int main(void)
     //start threads for processing direction and proximity
     //measure_proximity_start();
 
-
+    //start thread for audio
+    mic_start(&processAudioData);
 
 
     /* Infinite loop. */
