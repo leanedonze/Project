@@ -38,14 +38,14 @@ bool compare_tab(bool* tab1, bool* tab2, int size){
 }
 
 void audio_control(){
-	/* Idée 1 : 8 directions possibles
+	// Idée 1 : 8 directions possibles -> moins saccadé
 	if (compare_tab(go_front, mic_states, NUMBER_MIC) == 1){
 		left_motor_set_speed(600);
 		right_motor_set_speed(600);
 	}
 	else if (compare_tab(go_front_right, mic_states, NUMBER_MIC) == 1){
 		left_motor_set_speed(600);
-		right_motor_set_speed(600);
+		right_motor_set_speed(200);
 	}
 	else if (compare_tab(go_right, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(600);
@@ -53,14 +53,14 @@ void audio_control(){
 		}
 	else if (compare_tab(go_back_right, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(-600);
-			right_motor_set_speed(-600);
+			right_motor_set_speed(-200);
 		}
 	else if (compare_tab(go_back, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(-600);
 			right_motor_set_speed(-600);
 		}
 	else if (compare_tab(go_back_left, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(-600);
+			left_motor_set_speed(-200);
 			right_motor_set_speed(-600);
 		}
 	else if (compare_tab(go_left, mic_states, NUMBER_MIC) == 1){
@@ -68,11 +68,11 @@ void audio_control(){
 			right_motor_set_speed(600);
 		}
 	else if (compare_tab(go_front_left, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(600);
+			left_motor_set_speed(200);
 			right_motor_set_speed(600);
 		}
-	*/
-	//Idée 2 : soit en avant, soit en arrière, soit à gauche, soit à droite
+
+	/*Idée 2 : soit en avant, soit en arrière, soit à gauche, soit à droite
 	if (mic_states[MIC_FRONT] == 1){
 		left_motor_set_speed(600);
 		right_motor_set_speed(600);
@@ -105,6 +105,7 @@ void audio_control(){
 		set_led(LED5,0);
 		set_led(LED7,0);
 	}
+	*/
 }
 
 void proximity_control(){
