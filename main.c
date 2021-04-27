@@ -29,7 +29,7 @@ int main(void)
     motors_init();
     //start the control of the motors
     control_motors_start();
-
+    set_led(LED7,2);
     //starting proximity sensors
     proximity_start();
 
