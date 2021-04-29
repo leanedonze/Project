@@ -23,8 +23,6 @@ typedef enum {
 
 #define NUMBER_MIC	4
 
-float* get_audio_buffer_ptr(BUFFER_NAME_t name);
-
 void processAudioData(int16_t *data, uint16_t num_samples);
 
 //gets angle at which robot must turn. zero on Front-Back axis
