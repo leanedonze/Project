@@ -14,6 +14,7 @@
 #include "process_audio.h"
 
 #define	FREQU_MOTORS	1	//D'après le cours, fréquence thread motor 1kHz -> à checker
+#define RAD_PER_STEP	0.00351
 
 static bool ir_states[NUMBER_SENSORS];
 static bool no_obstacle[NUMBER_SENSORS] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -28,6 +29,8 @@ static bool go_back_left[NUMBER_MIC] = {0, 1, 1, 0};
 static bool go_left[NUMBER_MIC] = {0, 1, 0, 0};
 static bool go_front_left[NUMBER_MIC] = {0, 1, 0, 1};
 
+static float angle;
+
 bool compare_tab(bool* tab1, bool* tab2, int size){
 	for (int i=0; i < size; ++i){
 		if((tab1[i]) != (tab2[i])){
@@ -38,6 +41,15 @@ bool compare_tab(bool* tab1, bool* tab2, int size){
 }
 
 void audio_control(){
+
+	/*volatile uint16_t nbSteps = angle/RAD_PER_STEP;
+
+	left_motor_set_pos(nbSteps);
+	right_motor_set_pos(-nbSteps);
+	left_motor_set_speed(600);
+	right_motor_set_speed(600);
+	*/
+
 	// Idée 1 : 8 directions possibles -> moins saccadé
 	if (compare_tab(go_front, mic_states, NUMBER_MIC) == 1){
 		left_motor_set_speed(600);
@@ -48,24 +60,24 @@ void audio_control(){
 		right_motor_set_speed(200);
 	}
 	else if (compare_tab(go_right, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(600);
-			right_motor_set_speed(-600);
-		}
-	else if (compare_tab(go_back_right, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(-600);
+			left_motor_set_speed(200);
 			right_motor_set_speed(-200);
 		}
+	/*else if (compare_tab(go_back_right, mic_states, NUMBER_MIC) == 1){
+			left_motor_set_speed(-600);
+			right_motor_set_speed(-200);
+		}*/
 	else if (compare_tab(go_back, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(-600);
-			right_motor_set_speed(-600);
+			right_motor_set_speed(600);
 		}
-	else if (compare_tab(go_back_left, mic_states, NUMBER_MIC) == 1){
+	/*else if (compare_tab(go_back_left, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(-200);
 			right_motor_set_speed(-600);
-		}
+		}*/
 	else if (compare_tab(go_left, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(-600);
-			right_motor_set_speed(600);
+			left_motor_set_speed(-200);
+			right_motor_set_speed(200);
 		}
 	else if (compare_tab(go_front_left, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(200);
@@ -135,6 +147,9 @@ static THD_FUNCTION(Motors, arg) {
 
     	//Get microphones
     	get_direction(mic_states);
+
+
+    	//angle = get_direction_angle();
 
     	if (compare_tab(no_obstacle,ir_states, NUMBER_SENSORS) == 1){		//If no obstacle, follow the sound
     		audio_control();
