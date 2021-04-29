@@ -60,24 +60,24 @@ void audio_control(){
 		right_motor_set_speed(200);
 	}
 	else if (compare_tab(go_right, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(600);
-			right_motor_set_speed(-600);
-		}
-	else if (compare_tab(go_back_right, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(-600);
+			left_motor_set_speed(200);
 			right_motor_set_speed(-200);
 		}
+	/*else if (compare_tab(go_back_right, mic_states, NUMBER_MIC) == 1){
+			left_motor_set_speed(-600);
+			right_motor_set_speed(-200);
+		}*/
 	else if (compare_tab(go_back, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(-600);
-			right_motor_set_speed(-600);
+			right_motor_set_speed(600);
 		}
-	else if (compare_tab(go_back_left, mic_states, NUMBER_MIC) == 1){
+	/*else if (compare_tab(go_back_left, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(-200);
 			right_motor_set_speed(-600);
-		}
+		}*/
 	else if (compare_tab(go_left, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(-600);
-			right_motor_set_speed(600);
+			left_motor_set_speed(-200);
+			right_motor_set_speed(200);
 		}
 	else if (compare_tab(go_front_left, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(200);
