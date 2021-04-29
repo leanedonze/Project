@@ -12,6 +12,9 @@
 #include "process_proximity.h"
 #include "audio/microphone.h"
 #include "process_audio.h"
+#include "song_selector.h"
+#include "audio/play_melody.h"
+#include "audio/audio_thread.h"
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
@@ -39,9 +42,13 @@ int main(void)
     //start thread for audio
     mic_start(&processAudioData);
 
+    dac_start();
+
+    playMelodyStart();
 
     /* Infinite loop. */
     while (1) {
+    	choose_song();
     	//waits 1 second
         //chThdSleepMilliseconds(1000);
     }
