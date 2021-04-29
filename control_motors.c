@@ -121,15 +121,19 @@ void audio_control(){
 }
 
 void proximity_control(){
-	if ((ir_states[IR_FRONT_RIGHT] == 1) || (ir_states[IR_FRONT_LEFT] == 1)){		//Check if obstacle on front
-		if(ir_states[IR_LEFT] == 0){												//If if obstacle on the left
-			left_motor_set_speed(-600);												//If not, turn left
-			right_motor_set_speed(600);
+	if ((ir_states[IR_FRONT_RIGHT] == 1) || (ir_states[IR_FRONT_LEFT] == 1)){ 		//Check if obstacle on front
+		//|| (ir_states[IR_FRONT_LEFT45] == 1) || (ir_states[IR_FRONT_RIGHT45] == 1)
+		if((ir_states[IR_LEFT] == 0)){												//If  obstacle on the left  && (ir_states[IR_FRONT_LEFT45] == 0)
+			left_motor_set_speed(-200);												//If not, turn left
+			right_motor_set_speed(200);
 		}
-		else if(ir_states[IR_RIGHT] == 0){											//Check if obstacle on the right
-			left_motor_set_speed(600);												//If not, turn right
-			right_motor_set_speed(-600);
+		else if((ir_states[IR_RIGHT] == 0)){										//Check if obstacle on the right  && (ir_states[IR_FRONT_LEFT45] == 0)
+			left_motor_set_speed(200);												//If not, turn right
+			right_motor_set_speed(-200);
 		}
+	} else {
+		left_motor_set_speed(600);													//If not, go straight
+		right_motor_set_speed(600);
 	}
 }
 
