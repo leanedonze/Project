@@ -135,15 +135,16 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 
 		angle = atan2((phaseRight-phaseLeft),(phaseFront-phaseBack));
 
-    	if (angle>0){
-    		set_led(LED7,2);
-    		set_led(LED3,0);
-    	} else if (angle<=0){
-    		set_led(LED7,0);
+    	/*if (angle>0){
     		set_led(LED3,2);
+    		set_led(LED7,0);
+    	} else if (angle<=0){
+    		set_led(LED3,0);
+    		set_led(LED7,2);
     	} else {
     		set_led(LED1,2);
     	}
+    	*/
 
     	//attempt direction with bool table / state machine //RLBF
 
@@ -165,7 +166,7 @@ void get_direction(bool* direction){		//RLBF
 	if (deltaPhaseRL>0.2){
 		direction[MIC_RIGHT] = 1;
 		direction[MIC_LEFT] = 0;
-	} else if (deltaPhaseRL<0.2){
+	} else if (deltaPhaseRL<-0.2){
 		direction[MIC_RIGHT] = 0;
 		direction[MIC_LEFT] = 1;
 	} else {
@@ -176,7 +177,7 @@ void get_direction(bool* direction){		//RLBF
 	if (deltaPhaseFB>0.2){
 		direction[MIC_FRONT] = 1;
 		direction[MIC_BACK] = 0;
-	} else if (deltaPhaseRL<0.2){
+	} else if (deltaPhaseFB<-0.2){
 		direction[MIC_FRONT] = 0;
 		direction[MIC_BACK] = 1;
 	} else {
