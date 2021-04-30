@@ -28,6 +28,7 @@ int main(void)
     chSysInit();
     mpu_init();
     messagebus_init(&bus, &bus_lock, &bus_condvar);
+    usb_start();
 
 
     //starting proximity sensors
