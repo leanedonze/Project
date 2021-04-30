@@ -27,6 +27,7 @@ int main(void)
     mpu_init();
     messagebus_init(&bus, &bus_lock, &bus_condvar);
     motors_init();
+    usb_start();
     //start the control of the motors
     control_motors_start();
 

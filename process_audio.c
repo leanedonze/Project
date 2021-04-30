@@ -9,7 +9,10 @@
 #include "arm_const_structs.h"
 #include "leds.h"
 #include <arm_math.h>
-//#include <math.h>
+
+//include pour chprintf
+#include "usbcfg.h"
+#include "chprintf.h"
 
 #define FFT_SIZE 				1024
 #define MIN_VALUE_THRESHOLD		10000
@@ -79,6 +82,10 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		micBack_cmplx_input[nb_samples] = (float)data[i + MIC_BACK];
 		micFront_cmplx_input[nb_samples] = (float)data[i + MIC_FRONT];
 
+		chprintf((BaseSequentialStream *)&SD3, data[i+MIC_RIGHT], ", ");
+		chprintf((BaseSequentialStream *)&SD3, data[i+MIC_LEFT], ", ");
+		chprintf((BaseSequentialStream *)&SD3, data[i+MIC_BACK], ", ");
+		chprintf((BaseSequentialStream *)&SD3, data[i+MIC_FRONT], ", ");
 
 		nb_samples++;
 
