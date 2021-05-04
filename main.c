@@ -12,6 +12,9 @@
 #include "process_proximity.h"
 #include "audio/microphone.h"
 #include "process_audio.h"
+#include "song_selector.h"
+#include "audio/play_melody.h"
+#include "audio/audio_thread.h"
 #include "control_motors.h"
 
 messagebus_t bus;
@@ -26,10 +29,6 @@ int main(void)
     chSysInit();
     mpu_init();
     messagebus_init(&bus, &bus_lock, &bus_condvar);
-    motors_init();
-    usb_start();
-    //start the control of the motors
-    control_motors_start();
 
     //starting proximity sensors
     proximity_start();
@@ -43,9 +42,13 @@ int main(void)
     //start thread for audio
     mic_start(&processAudioData);
 
+    dac_start();
+
+    playMelodyStart();
 
     /* Infinite loop. */
     while (1) {
+    	choose_song();
     	//waits 1 second
         //chThdSleepMilliseconds(1000);
     }

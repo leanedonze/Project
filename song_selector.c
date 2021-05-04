@@ -23,7 +23,8 @@ void launch_song (uint8_t song){
 
 void choose_song(void){		//probably needs a thread, right ? playMelodyStart(); to be placed somewhere
 
-	switch (get_selector()) {
+	volatile uint8_t sel = get_selector();
+	switch (sel) {
 		case IMPOSSIBLE_MISSION:
 			launch_song(IMPOSSIBLE_MISSION);
 	        break;

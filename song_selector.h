@@ -8,7 +8,7 @@
 #ifndef SONG_SELECTOR_H_
 #define SONG_SELECTOR_H_
 
-
+void choose_song(void);
 
 
 #endif /* SONG_SELECTOR_H_ */
