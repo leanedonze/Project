@@ -35,9 +35,6 @@ static void serial_start(void)
 }
 
 
-
-
-
 int main(void)
 {
 
