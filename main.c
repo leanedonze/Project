@@ -15,11 +15,27 @@
 #include "song_selector.h"
 #include "audio/play_melody.h"
 #include "audio/audio_thread.h"
+#include "motors.h"
 #include "control_motors.h"
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
 CONDVAR_DECL(bus_condvar);
+
+static void serial_start(void)
+{
+	static SerialConfig ser_cfg = {
+	    115200,
+	    0,
+	    0,
+	    0,
+	};
+
+	sdStart(&SD3, &ser_cfg); // UART3.
+}
+
+
+
 
 
 int main(void)
@@ -29,6 +45,10 @@ int main(void)
     chSysInit();
     mpu_init();
     messagebus_init(&bus, &bus_lock, &bus_condvar);
+    motors_init();
+    serial_start();
+
+    control_motors_start();
 
     //starting proximity sensors
     proximity_start();
@@ -50,7 +70,7 @@ int main(void)
     while (1) {
     	choose_song();
     	//waits 1 second
-        //chThdSleepMilliseconds(1000);
+        chThdSleepMilliseconds(1000);
     }
 }
 

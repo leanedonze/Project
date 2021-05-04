@@ -82,10 +82,8 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		micBack_cmplx_input[nb_samples] = (float)data[i + MIC_BACK];
 		micFront_cmplx_input[nb_samples] = (float)data[i + MIC_FRONT];
 
-		chprintf((BaseSequentialStream *)&SD3, data[i+MIC_RIGHT], ", ");
-		chprintf((BaseSequentialStream *)&SD3, data[i+MIC_LEFT], ", ");
-		chprintf((BaseSequentialStream *)&SD3, data[i+MIC_BACK], ", ");
-		chprintf((BaseSequentialStream *)&SD3, data[i+MIC_FRONT], ", ");
+		chprintf((BaseSequentialStream *)&SD3, "%d \r\n", data[i+MIC_RIGHT]);
+		//, data[i+MIC_LEFT], data[i+MIC_BACK],data[i+MIC_FRONT]
 
 		nb_samples++;
 

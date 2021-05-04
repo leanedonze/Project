@@ -21,10 +21,11 @@ void launch_song (uint8_t song){
 }
 
 
-void choose_song(void){		//probably needs a thread, right ? playMelodyStart(); to be placed somewhere
+void choose_song(void){
 
-	volatile uint8_t sel = get_selector();
-	switch (sel) {
+	int state = get_selector();
+
+	switch (state) {
 		case IMPOSSIBLE_MISSION:
 			launch_song(IMPOSSIBLE_MISSION);
 	        break;
