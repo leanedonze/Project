@@ -12,6 +12,8 @@
 #include "audio/microphone.h"			// à éviter ?
 #include "control_motors.h"
 #include "process_audio.h"
+#include "song_selector.h"
+#include "audio/play_melody.h"
 
 #define	FREQU_MOTORS	1	//D'après le cours, fréquence thread motor 1kHz -> à checker
 #define RAD_PER_STEP	0.00351
@@ -40,7 +42,7 @@ bool compare_tab(bool* tab1, bool* tab2, int size){
 	return true;
 }
 
-void audio_control(){
+void audio_control(void){
 
 	/*volatile uint16_t nbSteps = angle/RAD_PER_STEP;
 
@@ -120,7 +122,7 @@ void audio_control(){
 	*/
 }
 
-void proximity_control(){
+void proximity_control(void){
 	if ((ir_states[IR_FRONT_RIGHT] == 1) || (ir_states[IR_FRONT_LEFT] == 1)){ 		//Check if obstacle on front
 		//|| (ir_states[IR_FRONT_LEFT45] == 1) || (ir_states[IR_FRONT_RIGHT45] == 1)
 		if((ir_states[IR_LEFT] == 0)){												//If  obstacle on the left  && (ir_states[IR_FRONT_LEFT45] == 0)
@@ -146,6 +148,9 @@ static THD_FUNCTION(Motors, arg) {
 
     while(1){
 
+    	choose_song();
+
+
     	//Get IR_sensors
     	get_ir_states(ir_states);
 
@@ -162,11 +167,11 @@ static THD_FUNCTION(Motors, arg) {
     		proximity_control();
     	}
 
-        chThdSleepMilliseconds(1); // To be determined
+        chThdSleepMilliseconds(50); // To be determined
     }
 }
 
 void control_motors_start(void){
-	chThdCreateStatic(waMotors, sizeof(waMotors), NORMALPRIO, Motors, NULL);
+	chThdCreateStatic(waMotors, sizeof(waMotors), NORMALPRIO+1, Motors, NULL);
 }
 

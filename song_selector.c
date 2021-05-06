@@ -23,9 +23,9 @@ void launch_song (uint8_t song){
 
 void choose_song(void){
 
-	int state = get_selector();
+	//int state = get_selector();
 
-	switch (state) {
+	switch (7) {
 		case IMPOSSIBLE_MISSION:
 			launch_song(IMPOSSIBLE_MISSION);
 	        break;

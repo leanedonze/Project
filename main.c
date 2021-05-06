@@ -45,7 +45,11 @@ int main(void)
     motors_init();
     serial_start();
 
-    control_motors_start();
+    dac_start();
+
+    playMelodyStart();
+
+
 
     //starting proximity sensors
     proximity_start();
@@ -59,13 +63,12 @@ int main(void)
     //start thread for audio
     mic_start(&processAudioData);
 
-    dac_start();
+    control_motors_start();
 
-    playMelodyStart();
 
     /* Infinite loop. */
     while (1) {
-    	choose_song();
+
     	//waits 1 second
         chThdSleepMilliseconds(1000);
     }
