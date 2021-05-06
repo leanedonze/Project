@@ -21,7 +21,7 @@ typedef enum {
 	BACK_OUTPUT
 } BUFFER_NAME_t;
 
-float* get_audio_buffer_ptr(BUFFER_NAME_t name);
+#define NUMBER_MIC	4
 
 void processAudioData(int16_t *data, uint16_t num_samples);
 

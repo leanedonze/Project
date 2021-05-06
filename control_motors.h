@@ -9,6 +9,8 @@
 #define CONTROL_MOTORS_H_
 
 
+//start thread to control the motors
+void control_motors_start(void);
 
 
 

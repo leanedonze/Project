@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 
 #include "ch.h"
 #include "hal.h"
@@ -15,10 +15,24 @@
 #include "song_selector.h"
 #include "audio/play_melody.h"
 #include "audio/audio_thread.h"
+#include "motors.h"
+#include "control_motors.h"
 
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
 CONDVAR_DECL(bus_condvar);
+
+static void serial_start(void)
+{
+	static SerialConfig ser_cfg = {
+	    115200,
+	    0,
+	    0,
+	    0,
+	};
+
+	sdStart(&SD3, &ser_cfg); // UART3.
+}
 
 
 int main(void)
@@ -28,8 +42,10 @@ int main(void)
     chSysInit();
     mpu_init();
     messagebus_init(&bus, &bus_lock, &bus_condvar);
-    usb_start();
+    motors_init();
+    serial_start();
 
+    control_motors_start();
 
     //starting proximity sensors
     proximity_start();
@@ -38,7 +54,7 @@ int main(void)
     calibrate_ir();
 
     //start threads for processing direction and proximity
-    measure_proximity_start();
+    //measure_proximity_start();
 
     //start thread for audio
     mic_start(&processAudioData);
@@ -51,7 +67,7 @@ int main(void)
     while (1) {
     	choose_song();
     	//waits 1 second
-        //chThdSleepMilliseconds(1000);
+        chThdSleepMilliseconds(1000);
     }
 }
 
