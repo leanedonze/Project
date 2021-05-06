@@ -1,14 +1,14 @@
-/*
+/* Mini-projet : détection de la provenance du son et contournement d'obstacle
+ *
  * song_selector.h
  *
- *  Created on: 24 Apr 2021
- *      Author: 41774
+ * Authors: Léane Donzé et Alice Guntli
  */
 
 #ifndef SONG_SELECTOR_H_
 #define SONG_SELECTOR_H_
 
-void choose_song(void);
+void play_songs_start(void);
 
 
 #endif /* SONG_SELECTOR_H_ */

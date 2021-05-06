@@ -1,18 +1,15 @@
-/*
+/* Mini-projet : détection de la provenance du son et contournement d'obstacle
+ *
  * process_audio.c
  *
- *  Created on: 15 Apr 2021
- *      Author: 41774
+ * Authors: Léane Donzé et Alice Guntli
  */
+
 #include "audio/microphone.h"
 #include "process_audio.h"
 #include "arm_const_structs.h"
-#include "leds.h"
 #include <arm_math.h>
 
-//include pour chprintf
-#include "usbcfg.h"
-#include "chprintf.h"
 
 #define FFT_SIZE 				1024
 #define MIN_VALUE_THRESHOLD		10000
@@ -32,12 +29,12 @@ static float micRight_output[FFT_SIZE];
 static float micFront_output[FFT_SIZE];
 static float micBack_output[FFT_SIZE];
 
-static float angle;
+
 static float deltaPhaseRL = 0;
-static float deltaPhaseFB = 0; //RLBF
-static uint8_t phaseIndex = 0;
+static float deltaPhaseFB = 0;
+/*static uint8_t phaseIndex = 0; 					TODO remove if not using average
 static float bufferPhaseRL[NB_SAMPLES];
-static float bufferPhaseFB[NB_SAMPLES];
+static float bufferPhaseFB[NB_SAMPLES]; */
 
 
 //Fast Fourier Transform
@@ -81,9 +78,6 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		micLeft_cmplx_input[nb_samples] = (float)data[i + MIC_LEFT];
 		micBack_cmplx_input[nb_samples] = (float)data[i + MIC_BACK];
 		micFront_cmplx_input[nb_samples] = (float)data[i + MIC_FRONT];
-
-		chprintf((BaseSequentialStream *)&SD3, "%d, \r", data[i+MIC_RIGHT],",");
-		//, data[i+MIC_LEFT], data[i+MIC_BACK],data[i+MIC_FRONT]
 
 		nb_samples++;
 
@@ -132,42 +126,15 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		int16_t indexFront = detect_frequency(micFront_output);
 		int16_t indexBack = detect_frequency(micBack_output);
 
-		//find phase differences
+		//find phase of sound incoming from the different mics
 
 		float phaseRight = atan2(micRight_cmplx_input[indexRight + 1],micRight_cmplx_input[indexRight]);
 		float phaseLeft = atan2(micLeft_cmplx_input[indexLeft + 1],micLeft_cmplx_input[indexLeft]);
 		float phaseFront = atan2(micFront_cmplx_input[indexFront + 1],micFront_cmplx_input[indexFront]);
 		float phaseBack = atan2(micBack_cmplx_input[indexBack + 1],micBack_cmplx_input[indexBack]);
 
-		//attempt direction with atan, works
 
-    	/*if (angle>0){
-    		set_led(LED3,2);
-    		set_led(LED7,0);
-    	} else if (angle<=0){
-    		set_led(LED3,0);
-    		set_led(LED7,2);
-    	} else {
-    		set_led(LED1,2);
-    	}
-    	*/
-
-    	//attempt direction with bool table / state machine //RLBF
-
-
-		/*deltaPhaseRL_sum += (phaseRight - phaseLeft);
-		deltaPhaseFB_sum += (phaseFront - phaseBack);
-		direction_update++;
-
-		if (direction_update == 10){
-			deltaPhaseRL = deltaPhaseRL_sum/10.;
-			deltaPhaseFB = deltaPhaseFB_sum/10.;
-			deltaPhaseRL_sum = 0;
-			deltaPhaseFB_sum = 0;
-			direction_update = 0;
-		}*/
-
-		/*if (phaseIndex == NB_SAMPLES){
+		/*if (phaseIndex == NB_SAMPLES){ 						//circular buffer averaging TODO: remove if not used
 			phaseIndex = 0;
 		}
 		bufferPhaseRL[phaseIndex] = phaseRight - phaseLeft;
@@ -185,23 +152,20 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		deltaPhaseFB /= NB_SAMPLES;
 		*/
 
+
+		//Phase difference gives direction of the sound
 		deltaPhaseRL = phaseRight - phaseLeft;
 		deltaPhaseFB = phaseFront - phaseBack;
 
-		//angle = atan2(deltaPhaseRL,deltaPhaseFB);
 
 		nb_samples = 0;
 
 	}
 }
 
+// bool table values : Right Left Back Front
+void get_direction(bool* direction){
 
-float get_direction_angle(void){
-	return angle;
-}
-
-void get_direction(bool* direction){		//RLBF
-											// TODO find out whether the correct directions are set
 	if (deltaPhaseRL>0.2){
 		direction[MIC_RIGHT] = 1;
 		direction[MIC_LEFT] = 0;

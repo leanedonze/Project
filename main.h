@@ -1,3 +1,10 @@
+/* Mini-projet : détection de la provenance du son et contournement d'obstacle
+ *
+ * main.h
+ *
+ * Authors: Léane Donzé et Alice Guntli
+ */
+
 #ifndef MAIN_H
 #define MAIN_H
 

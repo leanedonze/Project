@@ -1,8 +1,8 @@
-/*
+/* Mini-projet : détection de la provenance du son et contournement d'obstacle
+ *
  * process_proximity.h
  *
- *  Created on: 15 Apr 2021
- *      Author: 41774
+ * Authors: Léane Donzé et Alice Guntli
  */
 
 #ifndef PROCESS_PROXIMITY_H_
@@ -21,12 +21,7 @@
 #define IR_FRONT_LEFT45		6
 #define IR_FRONT_LEFT		7
 
-//starts proximity sensor thread
-//void measure_proximity_start(void);
-
 //get states of IR_sensors
 void get_ir_states(bool* tab);
-
-
 
 #endif /* PROCESS_PROXIMITY_H_ */
