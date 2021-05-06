@@ -18,6 +18,10 @@
 #include "motors.h"
 #include "control_motors.h"
 
+//include pour chprintf
+#include "usbcfg.h"
+#include "chprintf.h"
+
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
 CONDVAR_DECL(bus_condvar);
@@ -45,7 +49,8 @@ int main(void)
     motors_init();
     serial_start();
 
-    control_motors_start();
+    //control_motors_start();
+
 
     //starting proximity sensors
     proximity_start();
