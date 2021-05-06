@@ -1,3 +1,10 @@
+/* Mini-projet : détection de la provenance du son et contournement d'obstacle
+ *
+ * main.c
+ *
+ * Authors: Léane Donzé et Alice Guntli
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,7 +13,6 @@
 #include "ch.h"
 #include "hal.h"
 #include "memory_protection.h"
-#include "leds.h"
 #include "main.h"
 #include "sensors/proximity.h"
 #include "process_proximity.h"

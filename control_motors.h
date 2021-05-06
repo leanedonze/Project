@@ -1,8 +1,8 @@
-/*
+/* Mini-projet : détection de la provenance du son et contournement d'obstacle
+ *
  * control_motors.h
  *
- *  Created on: 15 Apr 2021
- *      Author: 41774
+ * Authors: Léane Donzé et Alice Guntli
  */
 
 #ifndef CONTROL_MOTORS_H_

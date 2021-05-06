@@ -1,8 +1,8 @@
-/*
+/* Mini-projet : détection de la provenance du son et contournement d'obstacle
+ *
  * process_audio.h
  *
- *  Created on: 15 Apr 2021
- *      Author: 41774
+ * Authors: Léane Donzé et Alice Guntli
  */
 
 #ifndef PROCESS_AUDIO_H_
@@ -25,10 +25,8 @@ typedef enum {
 
 void processAudioData(int16_t *data, uint16_t num_samples);
 
-//gets angle at which robot must turn. zero on Front-Back axis
-float get_direction_angle(void);
-
 //gets table with bool that indicates direction
-void get_direction(bool* direction);//RLBF
+//order of the bool table values Right Left Back Front
+void get_direction(bool* direction);
 
 #endif /* PROCESS_AUDIO_H_ */

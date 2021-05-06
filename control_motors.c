@@ -1,22 +1,20 @@
-/*
+/* Mini-projet : détection de la provenance du son et contournement d'obstacle
+ *
  * control_motors.c
  *
- *  Created on: 15 Apr 2021
- *      Author: 41774
+ * Authors: Léane Donzé et Alice Guntli
  */
 
 #include <stdbool.h>
-#include "process_proximity.h"
-#include "leds.h"
-#include "motors.h"
-#include "audio/microphone.h"			// à éviter ?
 #include "control_motors.h"
+#include "process_proximity.h"
 #include "process_audio.h"
-#include "song_selector.h"
-#include "audio/play_melody.h"
+#include "motors.h"
+//#include "audio/microphone.h"			// utile pour Idée 2
 
-#define	FREQU_MOTORS	1	//D'après le cours, fréquence thread motor 1kHz -> à checker
-#define RAD_PER_STEP	0.00351
+
+#define	FREQU_MOTORS	1				//D'après le cours, fréquence thread motor 1kHz -> à checker
+
 
 static bool ir_states[NUMBER_SENSORS];
 static bool no_obstacle[NUMBER_SENSORS] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -25,13 +23,12 @@ static bool mic_states[NUMBER_MIC];
 static bool go_front[NUMBER_MIC] = {0, 0, 0, 1};
 static bool go_front_right[NUMBER_MIC] = {1, 0, 0, 1};
 static bool go_right[NUMBER_MIC] = {1, 0, 0, 0};
-static bool go_back_right[NUMBER_MIC] = {1, 0, 1, 0};
+//static bool go_back_right[NUMBER_MIC] = {1, 0, 1, 0};		//remove if not needed
 static bool go_back[NUMBER_MIC] = {0, 0, 1, 0};
-static bool go_back_left[NUMBER_MIC] = {0, 1, 1, 0};
+//static bool go_back_left[NUMBER_MIC] = {0, 1, 1, 0};		//remove if not needed
 static bool go_left[NUMBER_MIC] = {0, 1, 0, 0};
 static bool go_front_left[NUMBER_MIC] = {0, 1, 0, 1};
 
-static float angle;
 
 bool compare_tab(bool* tab1, bool* tab2, int size){
 	for (int i=0; i < size; ++i){
@@ -43,14 +40,6 @@ bool compare_tab(bool* tab1, bool* tab2, int size){
 }
 
 void audio_control(void){
-
-	/*volatile uint16_t nbSteps = angle/RAD_PER_STEP;
-
-	left_motor_set_pos(nbSteps);
-	right_motor_set_pos(-nbSteps);
-	left_motor_set_speed(600);
-	right_motor_set_speed(600);
-	*/
 
 	// Idée 1 : 8 directions possibles -> moins saccadé
 	if (compare_tab(go_front, mic_states, NUMBER_MIC) == 1){
@@ -155,8 +144,6 @@ static THD_FUNCTION(Motors, arg) {
     	get_direction(mic_states);
 
 
-    	//angle = get_direction_angle();
-
     	if (compare_tab(no_obstacle,ir_states, NUMBER_SENSORS) == 1){		//If no obstacle, follow the sound
     		audio_control();
     	}
@@ -164,7 +151,7 @@ static THD_FUNCTION(Motors, arg) {
     		proximity_control();
     	}
 
-        chThdSleepMilliseconds(50); // To be determined
+        chThdSleepMilliseconds(50); 										// To be determined
     }
 }
 
