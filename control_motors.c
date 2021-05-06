@@ -148,9 +148,6 @@ static THD_FUNCTION(Motors, arg) {
 
     while(1){
 
-    	choose_song();
-
-
     	//Get IR_sensors
     	get_ir_states(ir_states);
 

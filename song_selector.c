@@ -21,11 +21,10 @@ void launch_song (uint8_t song){
 }
 
 
+//chooses song according to selector state
 void choose_song(void){
 
-	//int state = get_selector();
-
-	switch (7) {
+	switch (get_selector()) {
 		case IMPOSSIBLE_MISSION:
 			launch_song(IMPOSSIBLE_MISSION);
 	        break;
@@ -75,4 +74,23 @@ void choose_song(void){
 
 }
 
+
+static THD_WORKING_AREA(waSongs, 256);	//Checker taille à réserver sur la stack
+static THD_FUNCTION(Songs, arg) {
+
+    chRegSetThreadName(__FUNCTION__);
+    (void)arg;
+
+    /*Infinite loop*/
+    while(1){
+
+    	choose_song();
+
+        chThdSleepMilliseconds(300); // To be determined
+    }
+}
+
+void play_songs_start(void){
+	chThdCreateStatic(waSongs, sizeof(waSongs), NORMALPRIO, Songs, NULL);
+}
 

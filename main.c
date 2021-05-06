@@ -22,53 +22,40 @@ messagebus_t bus;
 MUTEX_DECL(bus_lock);
 CONDVAR_DECL(bus_condvar);
 
-static void serial_start(void)
-{
-	static SerialConfig ser_cfg = {
-	    115200,
-	    0,
-	    0,
-	    0,
-	};
-
-	sdStart(&SD3, &ser_cfg); // UART3.
-}
-
 
 int main(void)
 {
-
+	//initialise message bus, motors
     halInit();
     chSysInit();
     mpu_init();
     messagebus_init(&bus, &bus_lock, &bus_condvar);
     motors_init();
-    serial_start();
 
+    //start speakers
     dac_start();
 
+    //starts melody thread
     playMelodyStart();
 
-
+    //starts thread that choose which/when a song is playing
+    play_songs_start();
 
     //starting proximity sensors
     proximity_start();
 
-    //calibrate proximity sensors						HERE?
+    //calibrate proximity sensors
     calibrate_ir();
-
-    //start threads for processing direction and proximity
-    //measure_proximity_start();
 
     //start thread for audio
     mic_start(&processAudioData);
 
+    //starts thread that controls motor depending on proximity or audio
     control_motors_start();
 
 
     /* Infinite loop. */
     while (1) {
-
     	//waits 1 second
         chThdSleepMilliseconds(1000);
     }
