@@ -32,10 +32,9 @@ static float micBack_output[FFT_SIZE];
 
 static float deltaPhaseRL = 0;
 static float deltaPhaseFB = 0;
-/*static uint8_t phaseIndex = 0; 					TODO remove if not using average
+/*static uint8_t phaseIndex = 0; 					//TODO remove if not using average
 static float bufferPhaseRL[NB_SAMPLES];
-static float bufferPhaseFB[NB_SAMPLES]; */
-
+static float bufferPhaseFB[NB_SAMPLES];*/
 
 //Fast Fourier Transform
 void doFFT_optimized(uint16_t size, float* complex_buffer){
@@ -149,8 +148,8 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		}
 
 		deltaPhaseRL /= NB_SAMPLES;
-		deltaPhaseFB /= NB_SAMPLES;
-		*/
+		deltaPhaseFB /= NB_SAMPLES;*/
+
 
 
 		//Phase difference gives direction of the sound
@@ -166,10 +165,10 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 // bool table values : Right Left Back Front
 void get_direction(bool* direction){
 
-	if (deltaPhaseRL>0.2){
+	if (deltaPhaseRL>0.3){
 		direction[MIC_RIGHT] = 1;
 		direction[MIC_LEFT] = 0;
-	} else if (deltaPhaseRL<-0.2){
+	} else if (deltaPhaseRL<-0.3){
 		direction[MIC_RIGHT] = 0;
 		direction[MIC_LEFT] = 1;
 	} else {

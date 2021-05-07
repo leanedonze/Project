@@ -117,12 +117,12 @@ void proximity_control(void){
 	if ((ir_states[IR_FRONT_RIGHT] == 1) || (ir_states[IR_FRONT_LEFT] == 1)){ 		//Check if obstacle on front
 		//|| (ir_states[IR_FRONT_LEFT45] == 1) || (ir_states[IR_FRONT_RIGHT45] == 1)
 		if((ir_states[IR_LEFT] == 0)){												//If  obstacle on the left  && (ir_states[IR_FRONT_LEFT45] == 0)
-			left_motor_set_speed(-1000);												//If not, turn left
-			right_motor_set_speed(1000);
+			left_motor_set_speed(-1100);												//If not, turn left
+			right_motor_set_speed(1100);
 		}
 		else if((ir_states[IR_RIGHT] == 0)){										//Check if obstacle on the right  && (ir_states[IR_FRONT_LEFT45] == 0)
-			left_motor_set_speed(1000);												//If not, turn right
-			right_motor_set_speed(-1000);
+			left_motor_set_speed(1100);												//If not, turn right
+			right_motor_set_speed(-1100);
 		}
 	} else if ((ir_states[IR_LEFT] == 1)){
 		left_motor_set_speed(600);
@@ -159,16 +159,18 @@ static THD_FUNCTION(Motors, arg) {
     	get_direction(mic_states);
 
 
-    	proximity_control();
+    	//proximity_control();
 
-    	/*if (compare_tab(no_obstacle,ir_states, NUMBER_SENSORS) == 1){		//If no obstacle, follow the sound
+    	if (compare_tab(no_obstacle,ir_states, NUMBER_SENSORS) == 1){		//If no obstacle, follow the sound
     		audio_control();
+    		chThdSleepMilliseconds(20);
     	}
     	else{																//If obstacle, direction with IR_sensors
     		proximity_control();
-    	}*/
+    		chThdSleepMilliseconds(100);
+    	}
 
-        chThdSleepMilliseconds(50); 										// To be determined
+//    	chThdSleepMilliseconds(100);										// To be determined
     }
 }
 
