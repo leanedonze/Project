@@ -12,7 +12,7 @@
 
 
 #define FFT_SIZE 				1024
-#define MIN_VALUE_THRESHOLD		10000
+#define MIN_VALUE_THRESHOLD		12000
 #define MIN_FREQ				10	//we don't analyze before this index to not use resources for nothing (156.25Hz)
 #define MAX_FREQ				30	//we don't analyze after this index to not use resources for nothing (468.75Hz)
 #define NB_SAMPLES				10
