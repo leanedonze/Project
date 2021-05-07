@@ -49,7 +49,7 @@ int main(void)
     motors_init();
     serial_start();
 
-    //control_motors_start();
+    control_motors_start();
 
 
     //starting proximity sensors

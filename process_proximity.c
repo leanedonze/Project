@@ -3,7 +3,9 @@
 #include "leds.h"
 #include <stdbool.h>
 
-
+//include pour chprintf
+#include "usbcfg.h"
+#include "chprintf.h"
 
 #define SLEEP50HZ			20
 #define IR_THRESHOLD		100		//tells the distance limit to an object before turning
@@ -23,6 +25,9 @@ void ir_state(bool* tab, int sensor){
 
 void get_ir_states(bool* tab){
 	for (int i=0; i < NUMBER_SENSORS; ++i){
+		if (i == 2){
+			chprintf((BaseSequentialStream *)&SD3, "%d,", get_calibrated_prox(i));
+		}
 		ir_state(tab, i);
 	}
 }

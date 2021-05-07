@@ -84,7 +84,7 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 
 
 
-		chprintf((BaseSequentialStream *)&SD3, "%d,", data[i+MIC_RIGHT], data[i+MIC_LEFT], data[i+MIC_BACK],data[i+MIC_FRONT]);
+		//chprintf((BaseSequentialStream *)&SD3, "%d,", data[i+MIC_RIGHT], data[i+MIC_LEFT], data[i+MIC_BACK],data[i+MIC_FRONT]);
 		//chprintf((BaseSequentialStream *)&SD3, "\n");
 
 		nb_samples++;
