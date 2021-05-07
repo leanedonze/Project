@@ -13,6 +13,8 @@
 //#include "audio/microphone.h"			// utile pour Idée 2
 
 
+
+
 #define	FREQU_MOTORS	1				//D'après le cours, fréquence thread motor 1kHz -> à checker
 
 
@@ -115,17 +117,30 @@ void proximity_control(void){
 	if ((ir_states[IR_FRONT_RIGHT] == 1) || (ir_states[IR_FRONT_LEFT] == 1)){ 		//Check if obstacle on front
 		//|| (ir_states[IR_FRONT_LEFT45] == 1) || (ir_states[IR_FRONT_RIGHT45] == 1)
 		if((ir_states[IR_LEFT] == 0)){												//If  obstacle on the left  && (ir_states[IR_FRONT_LEFT45] == 0)
-			left_motor_set_speed(-200);												//If not, turn left
-			right_motor_set_speed(200);
+			left_motor_set_speed(-1000);												//If not, turn left
+			right_motor_set_speed(1000);
 		}
 		else if((ir_states[IR_RIGHT] == 0)){										//Check if obstacle on the right  && (ir_states[IR_FRONT_LEFT45] == 0)
-			left_motor_set_speed(200);												//If not, turn right
-			right_motor_set_speed(-200);
+			left_motor_set_speed(1000);												//If not, turn right
+			right_motor_set_speed(-1000);
 		}
-	} else {
+	} else if ((ir_states[IR_LEFT] == 1)){
+		left_motor_set_speed(600);
+		right_motor_set_speed(600);
+	} else if ((ir_states[IR_RIGHT] == 1)){
+		left_motor_set_speed(600);
+		right_motor_set_speed(600);
+	} /*else if ((ir_states[IR_FRONT_LEFT45] == 1) && (ir_states[IR_LEFT] == 0)){
+		left_motor_set_speed(1000);
+		right_motor_set_speed(-1000);
+	} else if ((ir_states[IR_FRONT_RIGHT45] == 1) && (ir_states[IR_RIGHT] == 0)){
+		left_motor_set_speed(-1000);
+		right_motor_set_speed(1000);
+	}*/ else {
 		left_motor_set_speed(600);													//If not, go straight
 		right_motor_set_speed(600);
 	}
+
 }
 
 static THD_WORKING_AREA(waMotors, 256);	//Checker taille à réserver sur la stack
@@ -144,12 +159,14 @@ static THD_FUNCTION(Motors, arg) {
     	get_direction(mic_states);
 
 
-    	if (compare_tab(no_obstacle,ir_states, NUMBER_SENSORS) == 1){		//If no obstacle, follow the sound
+    	proximity_control();
+
+    	/*if (compare_tab(no_obstacle,ir_states, NUMBER_SENSORS) == 1){		//If no obstacle, follow the sound
     		audio_control();
     	}
     	else{																//If obstacle, direction with IR_sensors
     		proximity_control();
-    	}
+    	}*/
 
         chThdSleepMilliseconds(50); 										// To be determined
     }

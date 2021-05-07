@@ -10,7 +10,6 @@
 #include <stdbool.h>
 
 
-
 #define SLEEP50HZ			20
 #define IR_THRESHOLD		100		//tells the distance limit to an object before turning
 

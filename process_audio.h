@@ -8,6 +8,8 @@
 #ifndef PROCESS_AUDIO_H_
 #define PROCESS_AUDIO_H_
 
+#include <stdint.h> 		//needed to add it ?????
+
 typedef enum {
 	//2 times FFT_SIZE because these arrays contain complex numbers (real + imaginary)
 	LEFT_CMPLX_INPUT = 0,

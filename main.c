@@ -24,6 +24,18 @@
 #include "motors.h"
 #include "control_motors.h"
 
+static void serial_start(void)
+{
+	static SerialConfig ser_cfg = {
+	    115200,
+	    0,
+	    0,
+	    0,
+	};
+
+	sdStart(&SD3, &ser_cfg); // UART3.
+}
+
 messagebus_t bus;
 MUTEX_DECL(bus_lock);
 CONDVAR_DECL(bus_condvar);
@@ -35,6 +47,7 @@ int main(void)
     halInit();
     chSysInit();
     mpu_init();
+    serial_start();
     messagebus_init(&bus, &bus_lock, &bus_condvar);
     motors_init();
 
