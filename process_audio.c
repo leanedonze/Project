@@ -9,10 +9,13 @@
 #include "process_audio.h"
 #include "arm_const_structs.h"
 #include <arm_math.h>
+#include <song_selector.h>
+#include "audio/play_melody.h"
 
 
 #define FFT_SIZE 				1024
 #define MIN_VALUE_THRESHOLD		12000
+#define VICTORY_THRESHOLD		20000 //à adapter
 #define MIN_FREQ				10	//we don't analyze before this index to not use resources for nothing (156.25Hz)
 #define MAX_FREQ				30	//we don't analyze after this index to not use resources for nothing (468.75Hz)
 #define NB_SAMPLES				10
@@ -124,6 +127,11 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		int16_t indexLeft = detect_frequency(micLeft_output);
 		int16_t indexFront = detect_frequency(micFront_output);
 		int16_t indexBack = detect_frequency(micBack_output);
+
+		//if the amplitude is high enough, victory
+		if (micFront_output[indexFront] > VICTORY_THRESHOLD){
+			launch_song(WE_ARE_THE_CHAMPIONS);
+		}
 
 		//find phase of sound incoming from the different mics
 
