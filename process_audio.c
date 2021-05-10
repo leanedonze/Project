@@ -39,6 +39,8 @@ static uint8_t phaseIndex = 0;
 static float bufferPhaseRL[NB_SAMPLES];
 static float bufferPhaseFB[NB_SAMPLES];
 
+static uint32_t compteur = 0;
+
 
 //Fast Fourier Transform
 void doFFT_optimized(uint16_t size, float* complex_buffer){
@@ -85,7 +87,6 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 
 
 		//chprintf((BaseSequentialStream *)&SD3, "%d,", data[i+MIC_RIGHT], data[i+MIC_LEFT], data[i+MIC_BACK],data[i+MIC_FRONT]);
-		//chprintf((BaseSequentialStream *)&SD3, "\n");
 
 		nb_samples++;
 
@@ -186,7 +187,14 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		deltaPhaseRL /= NB_SAMPLES;
 		deltaPhaseFB /= NB_SAMPLES;
 		*/
-
+		++compteur;
+		if (compteur == 200){
+			set_led(LED3,2);
+			chprintf((BaseSequentialStream *)&SD3, "FFT %d,");
+			for (int i = 0; i < FFT_SIZE; ++i){
+				chprintf((BaseSequentialStream *)&SD3, "%d,", micRight_output[i]);
+			}
+		}
 		deltaPhaseRL = phaseRight - phaseLeft;
 		deltaPhaseFB = phaseFront - phaseBack;
 
