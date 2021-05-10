@@ -46,7 +46,7 @@ int main(void)
     chSysInit();
     mpu_init();
     messagebus_init(&bus, &bus_lock, &bus_condvar);
-    motors_init();
+    //motors_init();
     serial_start();
 
     control_motors_start();

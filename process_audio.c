@@ -192,11 +192,15 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 			set_led(LED3,2);
 			chprintf((BaseSequentialStream *)&SD3, "FFT %d,");
 			for (int i = 0; i < FFT_SIZE; ++i){
-				chprintf((BaseSequentialStream *)&SD3, "%d,", micRight_output[i]);
+				chprintf((BaseSequentialStream *)&SD3, "%f,", micRight_output[i]);
 			}
 		}
+		set_led(LED3,0);
+
 		deltaPhaseRL = phaseRight - phaseLeft;
 		deltaPhaseFB = phaseFront - phaseBack;
+		//chprintf((BaseSequentialStream *)&SD3, "%f,", deltaPhaseRL);
+		//chprintf((BaseSequentialStream *)&SD3, "%f,", deltaPhaseFB);
 
 		//angle = atan2(deltaPhaseRL,deltaPhaseFB);
 
