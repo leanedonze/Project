@@ -188,7 +188,7 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		deltaPhaseFB /= NB_SAMPLES;
 		*/
 		++compteur;
-		if (compteur == 200){
+		if (compteur == 50){
 			set_led(LED3,2);
 			chprintf((BaseSequentialStream *)&SD3, "FFT %d,");
 			for (int i = 0; i < FFT_SIZE; ++i){
