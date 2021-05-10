@@ -86,7 +86,7 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 
 
 
-		//chprintf((BaseSequentialStream *)&SD3, "%d,", data[i+MIC_RIGHT], data[i+MIC_LEFT], data[i+MIC_BACK],data[i+MIC_FRONT]);
+		chprintf((BaseSequentialStream *)&SD3, "%d,", data[i+MIC_RIGHT]);
 
 		nb_samples++;
 
@@ -188,14 +188,14 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		deltaPhaseFB /= NB_SAMPLES;
 		*/
 		++compteur;
-		if (compteur == 50){
+		/*if (compteur == 50){
 			set_led(LED3,2);
 			chprintf((BaseSequentialStream *)&SD3, "FFT %d,");
 			for (int i = 0; i < FFT_SIZE; ++i){
 				chprintf((BaseSequentialStream *)&SD3, "%f,", micRight_output[i]);
 			}
 		}
-		set_led(LED3,0);
+		set_led(LED3,0);*/
 
 		deltaPhaseRL = phaseRight - phaseLeft;
 		deltaPhaseFB = phaseFront - phaseBack;
