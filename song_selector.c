@@ -7,6 +7,9 @@
 
 #include "selector.h"
 #include "audio/play_melody.h"
+#include "process_audio.h"
+#include "leds.h"
+#include "control_motors.h"
 
 static uint8_t currentSong = EXTERNAL_SONG;
 
@@ -83,8 +86,19 @@ static THD_FUNCTION(Songs, arg) {
 
     /*Infinite loop*/
     while(1){
+    	if (get_volume() == true){
+    		stop_motors();
+			//set_led(LED1,2);
+			//set_led(LED3,2);
+			//set_led(LED5,2);
+			//set_led(LED7,2);
+    		launch_song(MARIO_FLAG);
+    		waitMelodyHasFinished();
 
-    	choose_song();
+    	}
+    	else{
+    		choose_song();
+    	}
 
         chThdSleepMilliseconds(300); // To be determined
     }

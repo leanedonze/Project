@@ -10,7 +10,7 @@
 #include "process_proximity.h"
 #include "process_audio.h"
 #include "motors.h"
-//#include "audio/microphone.h"			// utile pour Idée 2
+#include "audio/play_melody.h"			// utile pour Idée 2
 
 
 
@@ -152,6 +152,8 @@ static THD_FUNCTION(Motors, arg) {
 
     while(1){
 
+    	waitMelodyHasFinished();
+
     	//Get IR_sensors
     	get_ir_states(ir_states);
 
@@ -160,7 +162,6 @@ static THD_FUNCTION(Motors, arg) {
 
 
     	//proximity_control();
-
     	if (compare_tab(no_obstacle,ir_states, NUMBER_SENSORS) == 1){		//If no obstacle, follow the sound
     		audio_control();
     		chThdSleepMilliseconds(20);
@@ -170,6 +171,7 @@ static THD_FUNCTION(Motors, arg) {
     		chThdSleepMilliseconds(100);
     	}
 
+
 //    	chThdSleepMilliseconds(100);										// To be determined
     }
 }
@@ -178,3 +180,7 @@ void control_motors_start(void){
 	chThdCreateStatic(waMotors, sizeof(waMotors), NORMALPRIO+1, Motors, NULL);
 }
 
+void stop_motors(void){
+	left_motor_set_speed(0);
+	right_motor_set_speed(0);
+}

@@ -26,6 +26,7 @@ typedef enum {
 #define NUMBER_MIC	4
 
 void processAudioData(int16_t *data, uint16_t num_samples);
+bool get_volume(void);
 
 //gets table with bool that indicates direction
 //order of the bool table values Right Left Back Front
