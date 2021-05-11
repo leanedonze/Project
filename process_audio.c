@@ -9,13 +9,13 @@
 #include "process_audio.h"
 #include "arm_const_structs.h"
 #include <arm_math.h>
-#include <song_selector.h>
 #include "audio/play_melody.h"
+#include "leds.h"
 
 
 #define FFT_SIZE 				1024
 #define MIN_VALUE_THRESHOLD		12000
-#define VICTORY_THRESHOLD		20000 //à adapter
+#define VICTORY_THRESHOLD		400000 //à adapter
 #define MIN_FREQ				10	//we don't analyze before this index to not use resources for nothing (156.25Hz)
 #define MAX_FREQ				30	//we don't analyze after this index to not use resources for nothing (468.75Hz)
 #define NB_SAMPLES				10
@@ -35,6 +35,7 @@ static float micBack_output[FFT_SIZE];
 
 static float deltaPhaseRL = 0;
 static float deltaPhaseFB = 0;
+static bool volume = false;
 /*static uint8_t phaseIndex = 0; 					//TODO remove if not using average
 static float bufferPhaseRL[NB_SAMPLES];
 static float bufferPhaseFB[NB_SAMPLES];*/
@@ -130,7 +131,14 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 
 		//if the amplitude is high enough, victory
 		if (micFront_output[indexFront] > VICTORY_THRESHOLD){
-			launch_song(WE_ARE_THE_CHAMPIONS);
+			volume = true;
+		}
+		else{
+			volume = false;
+			set_led(LED1,0);
+			set_led(LED3,0);
+			set_led(LED5,0);
+			set_led(LED7,0);
 		}
 
 		//find phase of sound incoming from the different mics
@@ -194,6 +202,10 @@ void get_direction(bool* direction){
 		direction[MIC_FRONT] = 0;
 		direction[MIC_BACK] = 0;
 	}
+}
+
+bool get_volume(void){
+	return volume;
 }
 
 
