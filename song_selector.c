@@ -87,12 +87,13 @@ static THD_FUNCTION(Songs, arg) {
     /*Infinite loop*/
     while(1){
     	if (get_volume() == true){
-    		//stop_motors();
+    		stop_motors();
 			//set_led(LED1,2);
 			//set_led(LED3,2);
 			//set_led(LED5,2);
 			//set_led(LED7,2);
     		launch_song(WE_ARE_THE_CHAMPIONS);
+    		waitMelodyHasFinished();
 
     	}
     	else{
