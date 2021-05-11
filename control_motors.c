@@ -10,7 +10,7 @@
 #include "process_proximity.h"
 #include "process_audio.h"
 #include "motors.h"
-//#include "audio/microphone.h"			// utile pour Idée 2
+#include "audio/play_melody.h"			// utile pour Idée 2
 
 
 
@@ -151,6 +151,8 @@ static THD_FUNCTION(Motors, arg) {
 
 
     while(1){
+
+    	waitMelodyHasFinished();
 
     	//Get IR_sensors
     	get_ir_states(ir_states);

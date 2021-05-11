@@ -93,7 +93,6 @@ static THD_FUNCTION(Songs, arg) {
 			//set_led(LED5,2);
 			//set_led(LED7,2);
     		launch_song(WE_ARE_THE_CHAMPIONS);
-    		waitMelodyHasFinished();
 
     	}
     	else{
