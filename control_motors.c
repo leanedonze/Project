@@ -52,36 +52,36 @@ void audio_control(){
 
 	// Idée 1 : 8 directions possibles -> moins saccadé
 	if (compare_tab(go_front, mic_states, NUMBER_MIC) == 1){
-		left_motor_set_speed(600);
-		right_motor_set_speed(600);
+		//left_motor_set_speed(600);
+		//right_motor_set_speed(600);
 	}
 	else if (compare_tab(go_front_right, mic_states, NUMBER_MIC) == 1){
-		left_motor_set_speed(600);
-		right_motor_set_speed(200);
+		//left_motor_set_speed(600);
+		//right_motor_set_speed(200);
 	}
 	else if (compare_tab(go_right, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(200);
-			right_motor_set_speed(-200);
+			//left_motor_set_speed(200);
+			//right_motor_set_speed(-200);
 		}
 	/*else if (compare_tab(go_back_right, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(-600);
 			right_motor_set_speed(-200);
 		}*/
 	else if (compare_tab(go_back, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(-600);
-			right_motor_set_speed(600);
+			//left_motor_set_speed(-600);
+			//right_motor_set_speed(600);
 		}
 	/*else if (compare_tab(go_back_left, mic_states, NUMBER_MIC) == 1){
 			left_motor_set_speed(-200);
 			right_motor_set_speed(-600);
 		}*/
 	else if (compare_tab(go_left, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(-200);
-			right_motor_set_speed(200);
+			//left_motor_set_speed(-200);
+			//right_motor_set_speed(200);
 		}
 	else if (compare_tab(go_front_left, mic_states, NUMBER_MIC) == 1){
-			left_motor_set_speed(200);
-			right_motor_set_speed(600);
+			//left_motor_set_speed(200);
+			//right_motor_set_speed(600);
 		}
 
 	/*Idée 2 : soit en avant, soit en arrière, soit à gauche, soit à droite
@@ -156,12 +156,12 @@ static THD_FUNCTION(Motors, arg) {
 
     	//angle = get_direction_angle();
 
-    	/*if (compare_tab(no_obstacle,ir_states, NUMBER_SENSORS) == 1){		//If no obstacle, follow the sound
+    	if (compare_tab(no_obstacle,ir_states, NUMBER_SENSORS) == 1){		//If no obstacle, follow the sound
     		audio_control();
     	}
     	else{																//If obstacle, direction with IR_sensors
     		proximity_control();
-    	}*/
+    	}
 
         chThdSleepMilliseconds(50); // To be determined
     }
