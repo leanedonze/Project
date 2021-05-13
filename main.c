@@ -31,14 +31,14 @@ CONDVAR_DECL(bus_condvar);
 
 int main(void)
 {
-	//initialise message bus, motors
+	//initializations
     halInit();
     chSysInit();
     mpu_init();
     messagebus_init(&bus, &bus_lock, &bus_condvar);
     motors_init();
 
-    //start speakers
+    //starts speakers
     dac_start();
 
     //starts melody thread
@@ -47,22 +47,21 @@ int main(void)
     //starts thread that choose which/when a song is playing
     play_songs_start();
 
-    //starting proximity sensors
+    //starts proximity sensors
     proximity_start();
 
-    //calibrate proximity sensors
+    //calibrates proximity sensors
     calibrate_ir();
 
-    //start thread for audio
+    //starts thread for audio
     mic_start(&processAudioData);
 
-    //starts thread that controls motor depending on proximity or audio
+    //starts thread that controls motors
     control_motors_start();
 
 
-    /* Infinite loop. */
+    // Infinite loop
     while (1) {
-    	//waits 1 second
         chThdSleepMilliseconds(1000);
     }
 }

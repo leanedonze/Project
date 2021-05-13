@@ -73,18 +73,18 @@ void choose_song(void){
 	    	stopCurrentMelody();
 	        break;
 	}
-
 }
 
 
-static THD_WORKING_AREA(waSongs, 256);	//Checker taille à réserver sur la stack
+static THD_WORKING_AREA(waSongs, 256);
 static THD_FUNCTION(Songs, arg) {
 
     chRegSetThreadName(__FUNCTION__);
     (void)arg;
 
-    /*Infinite loop*/
+    // Infinite loop
     while(1){
+    	// stops motors and launches victory song when near the sound source
     	if (get_volume() == true){
     		stop_motors();
     		launch_song(MARIO_FLAG);
@@ -92,10 +92,11 @@ static THD_FUNCTION(Songs, arg) {
 
     	}
     	else{
+    		// plays song according to selector state
     		choose_song();
     	}
 
-        chThdSleepMilliseconds(300); // To be determined
+        chThdSleepMilliseconds(300);
     }
 }
 

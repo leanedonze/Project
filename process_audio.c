@@ -12,20 +12,18 @@
 
 
 #define FFT_SIZE 				1024
-#define MIN_VALUE_THRESHOLD		12000
-#define VICTORY_THRESHOLD		400000
-#define MIN_FREQ				10	//we don't analyze before this index to not use resources for nothing (156.25Hz)
-#define MAX_FREQ				30	//we don't analyze after this index to not use resources for nothing (468.75Hz)
-#define THRESHOLD_RL			0.3
-#define THRESHOLD_FB			0.2
+#define MIN_VALUE_THRESHOLD		12000	// highest peak is above this value
+#define VICTORY_THRESHOLD		400000	// sound is loud, so the e-puck is near the source
+#define MAX_FREQ				40		// the frequency of the source is not too high, since it becomes unbearable to the ear of the user
+#define THRESHOLD_RL			0.3		// threshold of phase difference to know the direction between right and left
+#define THRESHOLD_FB			0.2		// threshold of phase difference to know the direction between front and back
 
 
-//2 times FFT_SIZE because these arrays contain complex numbers (real + imaginary)
+// tables used for data acquisition and FFT calculation
 static float micLeft_cmplx_input[2 * FFT_SIZE];
 static float micRight_cmplx_input[2 * FFT_SIZE];
 static float micFront_cmplx_input[2 * FFT_SIZE];
 static float micBack_cmplx_input[2 * FFT_SIZE];
-//Arrays containing the computed magnitude of the complex numbers
 static float micLeft_output[FFT_SIZE];
 static float micRight_output[FFT_SIZE];
 static float micFront_output[FFT_SIZE];
@@ -49,7 +47,7 @@ int16_t detect_frequency(float* data){
 	int16_t max_norm_index = -1;
 
 	//search for the highest peak
-	for(uint16_t i = MIN_FREQ ; i <= MAX_FREQ ; i++){
+	for(uint16_t i = 0 ; i <= MAX_FREQ ; i++){
 		if(data[i] > max_norm){
 			max_norm = data[i];
 			max_norm_index = i;
@@ -58,16 +56,8 @@ int16_t detect_frequency(float* data){
 	return max_norm_index;
 }
 
-
+// data acquisition and FFT calculation was taken from TP5, we added the phase calculation at the end
 void processAudioData(int16_t *data, uint16_t num_samples){
-
-	/*
-	*
-	*	We get 160 samples per mic every 10ms
-	*	So we fill the samples buffers to reach
-	*	1024 samples, then we compute the FFTs.
-	*
-	*/
 
 	static uint16_t nb_samples = 0;
 
@@ -96,37 +86,28 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 
 
 	if(nb_samples >= (2 * FFT_SIZE)){
-		/*	FFT processing
-		*
-		*	This FFT function stores the results in the input buffer given.
-		*	This is an "In Place" function.
-		*/
 
+		//	FFT processing
 		doFFT_optimized(FFT_SIZE, micRight_cmplx_input);
 		doFFT_optimized(FFT_SIZE, micLeft_cmplx_input);
 		doFFT_optimized(FFT_SIZE, micFront_cmplx_input);
 		doFFT_optimized(FFT_SIZE, micBack_cmplx_input);
 
-		/*	Magnitude processing
-		*
-		*	Computes the magnitude of the complex numbers and
-		*	stores them in a buffer of FFT_SIZE because it only contains
-		*	real numbers.
-		*
-		*/
+		//	Magnitude processing
 		arm_cmplx_mag_f32(micRight_cmplx_input, micRight_output, FFT_SIZE);
 		arm_cmplx_mag_f32(micLeft_cmplx_input, micLeft_output, FFT_SIZE);
 		arm_cmplx_mag_f32(micFront_cmplx_input, micFront_output, FFT_SIZE);
 		arm_cmplx_mag_f32(micBack_cmplx_input, micBack_output, FFT_SIZE);
 
-		//find index where max frequency is
+	// Phase calculation
 
+		//find index where max frequency is
 		int16_t indexRight = detect_frequency(micRight_output);
 		int16_t indexLeft = detect_frequency(micLeft_output);
 		int16_t indexFront = detect_frequency(micFront_output);
 		int16_t indexBack = detect_frequency(micBack_output);
 
-		//if the amplitude is high enough, victory
+		//if the amplitude is high enough, victory song is launched
 		if (micFront_output[indexFront] > VICTORY_THRESHOLD){
 			volume = true;
 		}
@@ -135,24 +116,23 @@ void processAudioData(int16_t *data, uint16_t num_samples){
 		}
 
 		//find phase of sound incoming from the different mics
-
 		float phaseRight = atan2(micRight_cmplx_input[indexRight + 1],micRight_cmplx_input[indexRight]);
 		float phaseLeft = atan2(micLeft_cmplx_input[indexLeft + 1],micLeft_cmplx_input[indexLeft]);
 		float phaseFront = atan2(micFront_cmplx_input[indexFront + 1],micFront_cmplx_input[indexFront]);
 		float phaseBack = atan2(micBack_cmplx_input[indexBack + 1],micBack_cmplx_input[indexBack]);
 
-
 		//Phase difference gives direction of the sound
 		deltaPhaseRL = phaseRight - phaseLeft;
 		deltaPhaseFB = phaseFront - phaseBack;
 
-
-		nb_samples = 0;	//mettre commentaire
+		// restarts the filling of the buffers
+		nb_samples = 0;
 
 	}
 }
 
-// bool table values : Right Left Back Front
+
+// bool table values order : Right Left Back Front
 void get_direction(bool* direction){
 
 	if (deltaPhaseRL>THRESHOLD_RL){

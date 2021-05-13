@@ -18,10 +18,11 @@
 #define FAST_SPEED		1100
 #define STOP			0
 
-
+// bool tables that describe the surrounding of the e-puck
 static bool ir_states[NUMBER_SENSORS];
 static bool no_obstacle[NUMBER_SENSORS] =	{0, 0, 0, 0, 0, 0, 0, 0};
 
+// bool tables that describe how the sound was received
 static bool mic_states[NUMBER_MIC];
 static bool go_front[NUMBER_MIC] = 			{0, 0, 0, 1};
 static bool go_front_right[NUMBER_MIC] = 	{1, 0, 0, 1};
@@ -40,63 +41,59 @@ bool compare_tab(bool* tab1, bool* tab2, int size){
 	return true;
 }
 
+
 void audio_control(void){
 
-	// Idée 1 : 8 directions possibles -> moins saccadé
-	if (compare_tab(go_front, mic_states, NUMBER_MIC) == true){
+	// sequence to go to the sound
+	if (compare_tab(go_front, mic_states, NUMBER_MIC) == true){					// if sound is straight ahead go straight
 		left_motor_set_speed(NORMAL_SPEED);
 		right_motor_set_speed(NORMAL_SPEED);
 	}
-	else if (compare_tab(go_front_right, mic_states, NUMBER_MIC) == true){
+	else if (compare_tab(go_front_right, mic_states, NUMBER_MIC) == true){		// if sound comes from the front right, turn right while moving forward
 		left_motor_set_speed(NORMAL_SPEED);
 		right_motor_set_speed(SLOW_SPEED);
 	}
-	else if (compare_tab(go_right, mic_states, NUMBER_MIC) == true){
+	else if (compare_tab(go_right, mic_states, NUMBER_MIC) == true){			// if sound comes from the right, spin slowly until direction changes
 		left_motor_set_speed(SLOW_SPEED);
 		right_motor_set_speed(-SLOW_SPEED);
 	}
-	else if (compare_tab(go_back, mic_states, NUMBER_MIC) == true){
+	else if (compare_tab(go_back, mic_states, NUMBER_MIC) == true){				// if sound comes from the back, spin fast until direction changes
 		left_motor_set_speed(-NORMAL_SPEED);
 		right_motor_set_speed(NORMAL_SPEED);
 	}
-	else if (compare_tab(go_left, mic_states, NUMBER_MIC) == true){
+	else if (compare_tab(go_left, mic_states, NUMBER_MIC) == true){				// if sound comes from the left, spin slowly until direction changes
 		left_motor_set_speed(-SLOW_SPEED);
 		right_motor_set_speed(SLOW_SPEED);
 	}
-	else if (compare_tab(go_front_left, mic_states, NUMBER_MIC) == true){
+	else if (compare_tab(go_front_left, mic_states, NUMBER_MIC) == true){		// if sound comes from the front left, turn left while moving forward
 		left_motor_set_speed(SLOW_SPEED);
 		right_motor_set_speed(NORMAL_SPEED);
 	}
 
 }
 
+
 void proximity_control(void){
-	if ((ir_states[IR_FRONT_RIGHT] == true) || (ir_states[IR_FRONT_LEFT] == true)){ 		//Check if obstacle on front
-		if((ir_states[IR_LEFT] == false)){												//If  obstacle on the left  && (ir_states[IR_FRONT_LEFT45] == 0)
-			left_motor_set_speed(-FAST_SPEED);												//If not, turn left
+
+	// sequence to avoid an obstacle
+	if ((ir_states[IR_FRONT_RIGHT] == true) || (ir_states[IR_FRONT_LEFT] == true)){ 	// if obstacle in front then
+		if((ir_states[IR_LEFT] == false)){												// if no obstacle on the left, turn left
+			left_motor_set_speed(-FAST_SPEED);
 			right_motor_set_speed(FAST_SPEED);
 		}
-		else if((ir_states[IR_RIGHT] == false)){										//Check if obstacle on the right  && (ir_states[IR_FRONT_LEFT45] == 0)
-			left_motor_set_speed(FAST_SPEED);												//If not, turn right
+		else if((ir_states[IR_RIGHT] == false)){										// else turn right
+			left_motor_set_speed(FAST_SPEED);
 			right_motor_set_speed(-FAST_SPEED);
 		}
 	}
-	else if ((ir_states[IR_LEFT] == true)){
+	else {																				// if obstacles elsewhere (behind or on the sides of the e-puck), go straight
 		left_motor_set_speed(NORMAL_SPEED);
 		right_motor_set_speed(NORMAL_SPEED);
 	}
-	else if ((ir_states[IR_RIGHT] == true)){
-		left_motor_set_speed(NORMAL_SPEED);
-		right_motor_set_speed(NORMAL_SPEED);
-	}
-	else {
-		left_motor_set_speed(NORMAL_SPEED);													//If not, go straight
-		right_motor_set_speed(NORMAL_SPEED);
-	}
-
 }
 
-static THD_WORKING_AREA(waMotors, 256);	//Checker taille à réserver sur la stack
+
+static THD_WORKING_AREA(waMotors, 256);
 static THD_FUNCTION(Motors, arg) {
 
     chRegSetThreadName(__FUNCTION__);
@@ -105,21 +102,21 @@ static THD_FUNCTION(Motors, arg) {
 
     while(1){
 
+    	// waits until victory song is over
     	waitMelodyHasFinished();
 
-    	//Get IR_sensors
+    	// get IR_sensors
     	get_ir_states(ir_states);
 
-    	//Get microphones
+    	// get microphones
     	get_direction(mic_states);
 
 
-    	//proximity_control();
-    	if (compare_tab(no_obstacle,ir_states, NUMBER_SENSORS) == true){		//If no obstacle, follow the sound
+    	if (compare_tab(no_obstacle,ir_states, NUMBER_SENSORS) == true){	// if no obstacle, follow the sound
     		audio_control();
     		chThdSleepMilliseconds(20);
     	}
-    	else{																//If obstacle, direction with IR_sensors
+    	else{																// if obstacle, direction with IR_sensors
     		proximity_control();
     		chThdSleepMilliseconds(100);
     	}
