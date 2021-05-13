@@ -9,6 +9,5 @@
 #define SONG_SELECTOR_H_
 
 void play_songs_start(void);
-void launch_song (uint8_t song);
 
 #endif /* SONG_SELECTOR_H_ */
